@@ -7,6 +7,7 @@ type Employee struct {
 	Age          int    `json:"age"`
 	Name         string `json:"name"`
 	DepartmentID int    `json:"department_id"`
+	firstName	 int    `json:"firstname_id"`
 }
 
 func (e Employee) String() string {
