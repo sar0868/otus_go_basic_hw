@@ -23,7 +23,9 @@ func main() {
 
 	staff, err = reader.ReadJSON(path)
 
-	fmt.Print(err)
+	if err != nil {
+		fmt.Printf("Error: %v", err)
+	}
 
 	printer.PrintStaff(staff)
 }

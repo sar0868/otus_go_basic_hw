@@ -13,6 +13,4 @@ func PrintStaff(staff []types.Employee) {
 		str = fmt.Sprintf(pattern, staff[i].UserID, staff[i].Age, staff[i].Name, staff[i].DepartmentID)
 		fmt.Println(str)
 	}
-
-	fmt.Println(str)
 }
