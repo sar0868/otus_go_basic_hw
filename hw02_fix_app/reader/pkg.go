@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/fixme_my_friend/hw02_fix_app/types"
+	"github.com/sar0868/otus_go_basic_hw/hw02_fix_app/types"
 )
 
 func ReadJSON(filePath string) ([]types.Employee, error) {
@@ -18,14 +18,12 @@ func ReadJSON(filePath string) ([]types.Employee, error) {
 	bytes, err := io.ReadAll(f)
 	if err != nil {
 		fmt.Printf("Error: %v", err)
-		return nil, nil
+		return nil, err
 	}
 
 	var data []types.Employee
 
 	err = json.Unmarshal(bytes, &data)
 
-	res := data
-
-	return res, err
+	return data, err
 }

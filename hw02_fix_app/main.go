@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/fixme_my_friend/hw02_fix_app/printer"
-	"github.com/fixme_my_friend/hw02_fix_app/reader"
-	"github.com/fixme_my_friend/hw02_fix_app/types"
+	"github.com/sar0868/otus_go_basic_hw/hw02_fix_app/printer"
+	"github.com/sar0868/otus_go_basic_hw/hw02_fix_app/reader"
+	"github.com/sar0868/otus_go_basic_hw/hw02_fix_app/types"
 )
 
-func init() {
+func main() {
 	path := "data.json"
 
 	fmt.Printf("Enter data file path: ")
