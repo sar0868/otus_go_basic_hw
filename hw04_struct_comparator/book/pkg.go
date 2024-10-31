@@ -9,7 +9,7 @@ type Book struct {
 	rate   float32
 }
 
-func (b Book) GetID() int {
+func (b Book) ID() int {
 	return b.id
 }
 
@@ -17,7 +17,7 @@ func (b *Book) SetID(id int) {
 	b.id = id
 }
 
-func (b Book) GetTitle() string {
+func (b Book) Title() string {
 	return b.title
 }
 
@@ -25,7 +25,7 @@ func (b *Book) SetTitle(title string) {
 	b.title = title
 }
 
-func (b Book) GetAuthor() string {
+func (b Book) Author() string {
 	return b.author
 }
 
@@ -33,7 +33,7 @@ func (b *Book) SetAuthor(author string) {
 	b.author = author
 }
 
-func (b Book) GetYear() int {
+func (b Book) Year() int {
 	return b.year
 }
 
@@ -41,7 +41,7 @@ func (b *Book) SetYear(year int) {
 	b.year = year
 }
 
-func (b Book) GetSize() int {
+func (b Book) Size() int {
 	return b.size
 }
 
@@ -49,10 +49,10 @@ func (b *Book) SetSize(size int) {
 	b.size = size
 }
 
-func (b Book) GetRate() float32 {
+func (b Book) Rate() float32 {
 	return b.rate
 }
 
-func (b *Book) SeRate(rate float32) {
+func (b *Book) SetRate(rate float32) {
 	b.rate = rate
 }

@@ -8,7 +8,7 @@ import (
 
 func main() {
 	book := book.Book{}
-	fmt.Println(book.GetID())
+	fmt.Println(book.ID())
 	book.SetID(2)
-	fmt.Println(book.GetID())
+	fmt.Println(book.ID())
 }
