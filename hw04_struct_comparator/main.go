@@ -1,5 +1,14 @@
 package main
 
+import (
+	"fmt"
+
+	"github.com/sar0868/otus_go_basic_hw/hw04_struct_comparator/book"
+)
+
 func main() {
-	// Place your code here.
+	book := book.Book{}
+	fmt.Println(book.GetID())
+	book.SetID(2)
+	fmt.Println(book.GetID())
 }
