@@ -7,8 +7,15 @@ import (
 )
 
 func main() {
-	book := book.Book{}
-	fmt.Println(book.ID())
-	book.SetID(2)
-	fmt.Println(book.ID())
+	book1 := book.Book{}
+	book1.SetYear(2024)
+	book2 := book.Book{}
+	book2.SetYear(2023)
+	book1.SetSize(10)
+	book2.SetSize(11)
+	book1.SetRate(2.2)
+	book2.SetRate(2.1)
+	fmt.Println(book1.Compare(book2, book.Year))
+	fmt.Println(book1.Compare(book2, book.Size))
+	fmt.Println(book1.Compare(book2, book.Rate))
 }

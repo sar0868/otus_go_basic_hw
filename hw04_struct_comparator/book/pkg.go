@@ -9,6 +9,14 @@ type Book struct {
 	rate   float32
 }
 
+type CompareType int
+
+const (
+	Year = iota
+	Size
+	Rate
+)
+
 func (b Book) ID() int {
 	return b.id
 }
@@ -55,4 +63,17 @@ func (b Book) Rate() float32 {
 
 func (b *Book) SetRate(rate float32) {
 	b.rate = rate
+}
+
+func (b Book) Compare(other Book, compareType CompareType) bool {
+	switch compareType {
+	case 0:
+		return b.year > other.year
+	case 1:
+		return b.size > other.size
+	case 2:
+		return b.rate > other.rate
+	default:
+		return false
+	}
 }
