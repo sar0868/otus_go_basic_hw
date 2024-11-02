@@ -9,15 +9,7 @@ type Book struct {
 	rate   float32
 }
 
-type CompareType int
-
-const (
-	Year = iota
-	Size
-	Rate
-)
-
-func (b Book) ID() int {
+func (b *Book) ID() int {
 	return b.id
 }
 
@@ -25,7 +17,7 @@ func (b *Book) SetID(id int) {
 	b.id = id
 }
 
-func (b Book) Title() string {
+func (b *Book) Title() string {
 	return b.title
 }
 
@@ -33,7 +25,7 @@ func (b *Book) SetTitle(title string) {
 	b.title = title
 }
 
-func (b Book) Author() string {
+func (b *Book) Author() string {
 	return b.author
 }
 
@@ -41,7 +33,7 @@ func (b *Book) SetAuthor(author string) {
 	b.author = author
 }
 
-func (b Book) Year() int {
+func (b *Book) Year() int {
 	return b.year
 }
 
@@ -49,7 +41,7 @@ func (b *Book) SetYear(year int) {
 	b.year = year
 }
 
-func (b Book) Size() int {
+func (b *Book) Size() int {
 	return b.size
 }
 
@@ -57,23 +49,10 @@ func (b *Book) SetSize(size int) {
 	b.size = size
 }
 
-func (b Book) Rate() float32 {
+func (b *Book) Rate() float32 {
 	return b.rate
 }
 
 func (b *Book) SetRate(rate float32) {
 	b.rate = rate
-}
-
-func (b Book) Compare(other Book, compareType CompareType) bool {
-	switch compareType {
-	case 0:
-		return b.year > other.year
-	case 1:
-		return b.size > other.size
-	case 2:
-		return b.rate > other.rate
-	default:
-		return false
-	}
 }

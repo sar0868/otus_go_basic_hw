@@ -6,6 +6,31 @@ import (
 	"github.com/sar0868/otus_go_basic_hw/hw04_struct_comparator/book"
 )
 
+type CompareBooks struct {
+	CmpType CompareType
+}
+
+type CompareType int
+
+const (
+	Year = iota
+	Size
+	Rate
+)
+
+func (cmp CompareBooks) Compare(first book.Book, second book.Book) bool {
+	switch cmp.CmpType {
+	case 0:
+		return first.Year() > second.Year()
+	case 1:
+		return first.Size() > second.Size()
+	case 2:
+		return first.Rate() > second.Rate()
+	default:
+		return false
+	}
+}
+
 func main() {
 	book1 := book.Book{}
 	book1.SetYear(2024)
@@ -15,7 +40,8 @@ func main() {
 	book2.SetSize(11)
 	book1.SetRate(2.2)
 	book2.SetRate(2.1)
-	fmt.Println(book1.Compare(book2, book.Year))
-	fmt.Println(book1.Compare(book2, book.Size))
-	fmt.Println(book1.Compare(book2, book.Rate))
+	cmp := CompareBooks{CompareType(Year)}
+	fmt.Println(cmp.Compare(book1, book2))
+	fmt.Println(CompareBooks{CompareType(Size)}.Compare(book1, book2))
+	fmt.Println(CompareBooks{CompareType(Rate)}.Compare(book1, book2))
 }
