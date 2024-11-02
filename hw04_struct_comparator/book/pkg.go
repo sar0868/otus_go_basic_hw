@@ -9,6 +9,17 @@ type Book struct {
 	rate   float32
 }
 
+func MakeBook(id int, title, author string, year, size int, rate float32) Book {
+	book := Book{}
+	book.SetID(id)
+	book.SetTitle(title)
+	book.SetAuthor(author)
+	book.SetYear(year)
+	book.SetSize(size)
+	book.SetRate(rate)
+	return book
+}
+
 func (b *Book) ID() int {
 	return b.id
 }
