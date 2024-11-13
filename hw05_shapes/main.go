@@ -14,7 +14,7 @@ func calculateArea(s any) (float64, error) {
 	if shape, ok := s.(shape.Shape); ok {
 		return shape.Area(), nil
 	}
-	err := errors.New("don't Shape")
+	err := errors.New("object don't Shape")
 	return 0, err
 }
 
@@ -36,22 +36,27 @@ func main() {
 
 	areaCircle, err := calculateArea(circle)
 	if err != nil {
-		fmt.Errorf("circle calculateArea: %w", err)
+		fmt.Println(err)
+	} else {
+		fmt.Println(areaCircle)
 	}
-	fmt.Println(areaCircle)
 	areaRect, err := calculateArea(rectangle)
 	if err != nil {
-		fmt.Errorf("rectangle calculateArea: %w", err)
+		fmt.Println(err)
+	} else {
+		fmt.Println(areaRect)
 	}
-	fmt.Println(areaRect)
 	areaTriangle, err := calculateArea(triangle)
 	if err != nil {
-		fmt.Errorf("triangle calculateArea: %w", err)
+		fmt.Println(err)
+	} else {
+		fmt.Println(areaTriangle)
 	}
-	fmt.Println(areaTriangle)
+
 	areaSquare, err := calculateArea(square)
 	if err != nil {
-		fmt.Errorf("square calculateArea: %w", err)
+		fmt.Println(err)
+	} else {
+		fmt.Println(areaSquare)
 	}
-	fmt.Println(areaSquare) 
 }
