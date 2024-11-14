@@ -1,3 +1,3 @@
-module github.com/fixme_my_friend/hw05_shapes
+module github.com/sar0868/sar0868/otus_go_basic_hw/hw05_shapes
 
 go 1.20
