@@ -14,9 +14,9 @@ func CreateChessboard(size int) string {
 	for i := 0; i < size; i++ {
 		for j := 0; j < size; j++ {
 			if i%2 == 0 && j%2 == 0 || i%2 != 0 && j%2 != 0 {
-				board += fmt.Sprint(" ")
+				board += " "
 			} else if i%2 == 0 && j%2 != 0 || i%2 != 0 && j%2 == 0 {
-				board += fmt.Sprint("#")
+				board += "#"
 			}
 		}
 		board += fmt.Sprintln("")

@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/sar0868/otus_go_basic_hw/hw06_testing/hw04_struct_comparator/book"
+	"github.com/sar0868/otus_go_basic_hw/hw06_testing/struct_comparator/book"
 	"github.com/stretchr/testify/assert"
 )
 
