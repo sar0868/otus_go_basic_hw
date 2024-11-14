@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/sar0868/sar0868/otus_go_basic_hw/hw05_shapes/models/circle"
-	"github.com/sar0868/sar0868/otus_go_basic_hw/hw05_shapes/models/rectangle"
-	"github.com/sar0868/sar0868/otus_go_basic_hw/hw05_shapes/models/triangle"
-	"github.com/sar0868/sar0868/otus_go_basic_hw/hw05_shapes/shape"
+	"github.com/sar0868/otus_go_basic_hw/hw06_testing/hw05_shapes/models/circle"
+	"github.com/sar0868/otus_go_basic_hw/hw06_testing/hw05_shapes/models/rectangle"
+	"github.com/sar0868/otus_go_basic_hw/hw06_testing/hw05_shapes/models/triangle"
+	"github.com/sar0868/otus_go_basic_hw/hw06_testing/hw05_shapes/shape"
 )
 
 func calculateArea(s any) (float64, error) {
