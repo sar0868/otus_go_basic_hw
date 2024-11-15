@@ -3,6 +3,7 @@ package triangle
 import (
 	"testing"
 
+	"github.com/sar0868/otus_go_basic_hw/hw06_testing/shapes/shape"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -35,4 +36,12 @@ func TestTriangle_Area(t *testing.T) {
 			assert.Equal(t, got, tt.want)
 		})
 	}
+}
+
+func Test_ImplementedInterfaceShape(t *testing.T) {
+	name := "Check implemented Triangle interface Shape"
+	t.Run(name, func(t *testing.T) {
+		triangle := Triangle{}
+		assert.Implements(t, (*shape.Shape)(nil), triangle)
+	})
 }

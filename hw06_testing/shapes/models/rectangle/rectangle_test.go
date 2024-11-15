@@ -3,6 +3,7 @@ package rectangle
 import (
 	"testing"
 
+	"github.com/sar0868/otus_go_basic_hw/hw06_testing/shapes/shape"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -34,4 +35,11 @@ func Test_Rectangle_Area(t *testing.T) {
 			assert.Equal(t, rect.Area(), tt.want)
 		})
 	}
+}
+func Test_ImplementedInterfaceShape(t *testing.T) {
+	name := "Check implemented Rectangle interface Shape"
+	t.Run(name, func(t *testing.T) {
+		rectangle := Rectangle{}
+		assert.Implements(t, (*shape.Shape)(nil), rectangle)
+	})
 }
