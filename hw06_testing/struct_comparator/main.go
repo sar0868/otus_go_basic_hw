@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/sar0868/otus_go_basic_hw/hw04_struct_comparator/book"
+	"github.com/sar0868/otus_go_basic_hw/hw06_testing/struct_comparator/book"
 )
 
 type CompareBooks struct {
@@ -42,6 +42,8 @@ func main() {
 	book2 := book.MakeBook(2, "Handbook", "WriterII", 2023, 11, 2.1)
 	book1.SetYear(2024)
 	cmp := NewCompareBooks(Year)
+	cmp2 := *NewCompareBooks(Year)
+	cmp2.Compare(book1, book2)
 	fmt.Println(cmp.Compare(book1, book2))
 	fmt.Println(NewCompareBooks(Size).Compare(book1, book2))
 	fmt.Println(NewCompareBooks(Rate).Compare(book1, book2))
