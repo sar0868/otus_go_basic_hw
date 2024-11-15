@@ -36,6 +36,7 @@ func Test_Rectangle_Area(t *testing.T) {
 		})
 	}
 }
+
 func Test_ImplementedInterfaceShape(t *testing.T) {
 	name := "Check implemented Rectangle interface Shape"
 	t.Run(name, func(t *testing.T) {

@@ -18,15 +18,16 @@ func Test_calculateArea(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "Calc Area circle(implemented Shape) r=1 want = 3.14",  
-			args: args{circle.NewCircle(1)},    
-			want: math.Pi,
+			name:    "Calc Area circle(implemented Shape) r=1 want = 3.14",
+			args:    args{circle.NewCircle(1)},
+			want:    math.Pi,
 			wantErr: false,
 		},
+
 		{
-			name: "Calc Area Square ( don't implemented Shape) wantErr=true",  
-			args: args{NewSquare(1)},    
-			want: 0,
+			name:    "Calc Area Square ( don't implemented Shape) wantErr=true",
+			args:    args{NewSquare(1)},
+			want:    0,
 			wantErr: true,
 		},
 	}
