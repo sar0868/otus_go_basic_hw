@@ -6,9 +6,6 @@ func main() {
 }
 
 func BinarySearch(data []int, el int) (int, bool) {
-	sort.Slice(data, func(i, j int) bool {
-		return data[i] < data[j]
-	})
 	k := len(data) - 1
 	p := 0
 	for p < k {
@@ -23,4 +20,11 @@ func BinarySearch(data []int, el int) (int, bool) {
 		}
 	}
 	return -1, false
+}
+
+func SortSlice(array []int) []int {
+	sort.Slice(array, func(i, j int) bool {
+		return array[i] < array[j]
+	})
+	return array
 }

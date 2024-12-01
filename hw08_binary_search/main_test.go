@@ -45,6 +45,7 @@ func Test_BinarySearch(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			tt.array = SortSlice(tt.array)
 			got, res := BinarySearch(tt.array, tt.find)
 			assert.Equal(t, got, tt.want)
 			assert.Equal(t, res, tt.result)
