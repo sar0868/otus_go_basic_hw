@@ -1,25 +1,25 @@
 package main
 
-import "fmt"
+import "sort"
 
 func main() {
-	arr := []int{1, 2, 3, 4}
-	ind, res := BinarySearch(arr, 3)
-	fmt.Println(ind, res)
 }
 
 func BinarySearch(data []int, el int) (int, bool) {
+	sort.Slice(data, func(i, j int) bool {
+		return data[i] < data[j]
+	})
 	k := len(data) - 1
 	p := 0
 	for p < k {
-		ind := p + (k-p)/2
+		ind := (p + k) / 2
 		if data[ind] == el {
 			return ind, true
 		}
 		if el < data[ind] {
-			k = ind
+			k = ind - 1
 		} else {
-			p = ind
+			p = ind + 1
 		}
 	}
 	return -1, false

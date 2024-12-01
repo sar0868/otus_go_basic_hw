@@ -35,6 +35,13 @@ func Test_BinarySearch(t *testing.T) {
 			want:   4,
 			result: true,
 		},
+		{
+			name:   "Search 8 from array [3, 9, 2, 5, 8, 19, 12, 11, 1] expected 4, true",
+			array:  []int{3, 9, 2, 5, 18, 8, 12, 11, 1},
+			find:   8,
+			want:   4,
+			result: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
