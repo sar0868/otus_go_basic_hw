@@ -15,30 +15,20 @@ func TestWriteJSON(t *testing.T) {
 		name    string
 		args    args
 		want    string
-		want2   []Book
 		wantErr bool
 	}{
 		{
 			name:    "Write and read slice json without errors",
 			args:    args{[]Book{{1, "title", "writer", 2024, 10, 1.1, []byte("A")}}},
 			want:    `[{"id":1,"title":"title","author":"writer","year":2024,"size":10,"rate":1.1,"sample":"QQ=="}]`,
-			want2:   []Book{{1, "title", "writer", 2024, 10, 1.1, []byte("A")}},
 			wantErr: false,
 		},
 		{
 			name:    "Write and read slice json without errors, Book empty",
 			args:    args{[]Book{}},
 			want:    `[]`,
-			want2:   []Book{},
 			wantErr: false,
 		},
-		// {
-		// 	name:    "Write slice json without errors, Read with error",
-		// 	args:    args{},
-		// 	want:    `[{"id": "a"}]`,
-		// 	want2: []Book{},
-		// 	wantErr: false,
-		// },
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -49,8 +39,6 @@ func TestWriteJSON(t *testing.T) {
 				return
 			}
 			assert.Equal(t, j, tt.want)
-			books := ReadJSON(got)
-			assert.Equal(t, books, tt.want2)
 		})
 	}
 }
@@ -63,8 +51,13 @@ func TestReadJSON(t *testing.T) {
 	}{
 		{
 			name: "Read slice json",
-			args: []string{`[{"id":1,"title":"title","author":"writer","year":2024,"size":10,"rate":1.1,"sample":"QQ=="}]`},
-			want: []Book{{1, "title", "writer", 2024, 10, 1.1, []byte("A")}},
+			args: []string{`{"id":1,"title":"tit"}`, `{"id":2}`},
+			want: []Book{{ID: 1, Title: "tit"}, {ID: 2}},
+		},
+		{
+			name: "Read empty slice json",
+			args: []string{},
+			want: []Book{},
 		},
 	}
 	for _, tt := range tests {

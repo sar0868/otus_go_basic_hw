@@ -34,10 +34,10 @@ func ReadJSON(jsonSlice [][]byte) []Book {
 	result := make([]Book, 0)
 	for _, v := range jsonSlice {
 		var book Book
-		json.Unmarshal(v, &book)
-		// if err != nil {
-		// 	continue
-		// }
+		err := json.Unmarshal(v, &book)
+		if err != nil {
+			continue
+		}
 		result = append(result, book)
 	}
 	return result
