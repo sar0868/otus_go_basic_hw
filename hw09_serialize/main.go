@@ -16,15 +16,6 @@ type Book struct {
 }
 
 func WriteJSON(books []Book) ([][]byte, error) {
-	// book := Book{
-	// 	ID:     1,
-	// 	Title:  "title",
-	// 	Author: "author",
-	// 	Year:   2024,
-	// 	Size:   10,
-	// 	Rate:   1,
-	// 	Sample: []byte{1, 2, 3},
-	// }
 	result := make([][]byte, 0)
 	for _, v := range books {
 		book := v
@@ -33,11 +24,23 @@ func WriteJSON(books []Book) ([][]byte, error) {
 			fmt.Printf("Error: %v", err)
 			return nil, err
 		}
-		fmt.Printf("%s\n", j)
 		result = append(result, j)
 	}
 
 	return result, nil
+}
+
+func ReadJSON(jsonSlice [][]byte) []Book {
+	result := make([]Book, 0)
+	for _, v := range jsonSlice {
+		var book Book
+		json.Unmarshal(v, &book)
+		// if err != nil {
+		// 	continue
+		// }
+		result = append(result, book)
+	}
+	return result
 }
 
 func main() {
@@ -48,12 +51,14 @@ func main() {
 		Year:   2024,
 		Size:   10,
 		Rate:   1,
-		Sample: []byte{1, 2, 3},
+		Sample: []byte("hello"),
 	}
 	books := []Book{book, book, book}
 	j, err := WriteJSON(books)
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("%s\n", j)
+	inp := fmt.Sprintf("%s\n", j)
+	// fmt.Printf("%s\n", j)
+	fmt.Println(inp)
 }
