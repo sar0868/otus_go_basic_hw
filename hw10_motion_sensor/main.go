@@ -11,25 +11,24 @@ var CLOSEA bool
 func Sensor(data chan<- float64) {
 	cnt := 0
 	for {
-		if CLOSEA{
+		if CLOSEA {
 			return
 		}
 		data <- rand.Float64() * 100
-		time.Sleep(100 * time.Millisecond)	
-		cnt++	
-		if cnt == 20{
+		time.Sleep(100 * time.Millisecond)
+		cnt++
+		if cnt == 20 {
 			close(data)
 
 			CLOSEA = true
 		}
 	}
-
 }
 
 func GetData(data <-chan float64, processedData chan<- float64) {
 	var sum float64
 	cnt := 0
-	for value := range data{
+	for value := range data {
 		// if CLOSEA {
 		// 	break
 		// }
@@ -60,7 +59,7 @@ func GetData(data <-chan float64, processedData chan<- float64) {
 }
 
 func Info(processedData <-chan float64) {
-	for mean := range processedData{
+	for mean := range processedData {
 		fmt.Println(mean)
 	}
 	// for {
@@ -71,15 +70,11 @@ func Info(processedData <-chan float64) {
 func main() {
 	data := make(chan float64)
 	processedData := make(chan float64)
-	
 
 	go Info(processedData)
 	go GetData(data, processedData)
 	go Sensor(data)
-	select{
-	
-	}
-
+	select {}
 
 	// time.Sleep(1 * time.Minute)
 }
