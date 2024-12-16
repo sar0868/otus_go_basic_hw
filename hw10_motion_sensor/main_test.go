@@ -1,6 +1,7 @@
 package main
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -32,12 +33,15 @@ func TestGetAndProcessingData(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var wg sync.WaitGroup
+			wg.Add(2)
 			go func() {
+				defer wg.Done()
 				for _, v := range tt.dataIn {
 					tt.args.data <- v
 				}
 			}()
-			go GetData(tt.args.data, tt.args.processedData)
+			go GetData(tt.args.data, tt.args.processedData, &wg)
 
 			received := <-tt.args.processedData
 
