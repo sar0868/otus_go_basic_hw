@@ -8,17 +8,18 @@ import (
 )
 
 func Sensor(data chan<- float64, wg *sync.WaitGroup) {
-	cnt := 0
+	timer := time.NewTimer(time.Minute)
+label:
 	for {
-		data <- rand.Float64() * 100
-		time.Sleep(1000 * time.Millisecond)
-		cnt++
-		if cnt == 60 {
-			close(data)
-			wg.Done()
-			return
+		select {
+		case data <- rand.Float64() * 100:
+			time.Sleep(500 * time.Millisecond)
+		case <-timer.C:
+			break label
 		}
 	}
+	close(data)
+	wg.Done()
 }
 
 func GetData(data <-chan float64, processedData chan<- float64, wg *sync.WaitGroup) {
