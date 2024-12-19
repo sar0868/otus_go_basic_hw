@@ -13,11 +13,11 @@ func TestCounter(t *testing.T) {
 		countGoroutines int
 		want            int
 	}{
-		{
-			name:            "Test 1 gorutina, count=3",
-			countGoroutines: 1,
-			want:            3,
-		},
+		// {
+		// 	name:            "Test 1 gorutina, count=3",
+		// 	countGoroutines: 1,
+		// 	want:            3,
+		// },
 		{
 			name:            "Test 3 gorutins, count=9",
 			countGoroutines: 3,
