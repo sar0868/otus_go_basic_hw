@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"sync"
 )
 
@@ -17,7 +16,7 @@ func Counter(n int, wg *sync.WaitGroup, mx *sync.Mutex) {
 		cnt++
 		mx.Unlock()
 	}
-	fmt.Printf("Counter %d completed work, cnt=%d done\n", n, cnt)
+	// fmt.Printf("Counter %d completed work, cnt=%d done\n", n, cnt)
 }
 
 func main() {
