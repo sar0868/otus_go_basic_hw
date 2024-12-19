@@ -7,7 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var mx sync.Mutex
 
 func TestCounter(t *testing.T) {
 	tests := []struct {
@@ -28,7 +27,7 @@ func TestCounter(t *testing.T) {
 	}
 	for _, tt := range tests {
 		var wg sync.WaitGroup
-
+		var mx sync.Mutex
 		cnt = 0
 		for i := 0; i < tt.countGoroutines; i++ {
 			wg.Add(1)
