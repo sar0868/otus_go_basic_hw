@@ -20,7 +20,7 @@ func Counter(n int, wg *sync.WaitGroup, mx *sync.Mutex, ch chan string) {
 	ch <- fmt.Sprintf("Counter %d completed work, cnt=%d done", n, cnt)
 }
 
-func Info(ch chan string, wg *sync.WaitGroup){
+func Info(ch chan string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	fmt.Println(<-ch)
 }
@@ -35,7 +35,6 @@ func main() {
 		wg.Add(1)
 		go Info(ch, &wg)
 	}
-
 
 	wg.Wait()
 }
