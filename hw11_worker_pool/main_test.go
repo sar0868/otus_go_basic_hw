@@ -32,7 +32,7 @@ func TestCounter(t *testing.T) {
 		for i := 0; i < tt.countGoroutines; i++ {
 			wg.Add(1)
 			go Counter(i, &wg, &mx, ch)
-			fmt.Println(<- ch)
+			fmt.Println(<-ch)
 		}
 		wg.Wait()
 		assert.Equal(t, cnt, tt.want)
