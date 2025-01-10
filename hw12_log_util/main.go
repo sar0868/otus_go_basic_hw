@@ -17,7 +17,6 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
 	}
-	// fmt.Println(os.Getenv("LOG_ANALYZER_FILE"))
 	var file string
 	var level string
 	var output string
@@ -26,5 +25,19 @@ func main() {
 	flag.StringVar(&output, "output", os.Getenv("LOG_ANALYZER_OUTPUT"), "path for output file")
 	flag.Parse()
 	fmt.Println(file, level, output)
-	// Place your code here.
+}
+
+func ReadFile(path string) error {
+	fmt.Println(path)
+	return nil
+}
+
+func CalcStatistics(data []string) map[string]int {
+	fmt.Println(data)
+	return make(map[string]int)
+}
+
+func WriteFile(data map[string]int) error {
+	fmt.Println(data)
+	return nil
 }
