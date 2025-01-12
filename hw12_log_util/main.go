@@ -28,6 +28,7 @@ func main() {
 	var level string
 	var output string
 	flag.StringVar(&file, "file", os.Getenv("LOG_ANALYZER_FILE"), "path log file")
+	// file = "test.log"
 	flag.StringVar(&level, "level", os.Getenv("LOG_ANALYZER_LEVEL"), "level for analysis")
 	flag.StringVar(&output, "output", os.Getenv("LOG_ANALYZER_OUTPUT"), "path for output file")
 	flag.Parse()
@@ -54,6 +55,9 @@ func CalcStatistics(data []string, level string) Statistic {
 	modulesLevel := map[string]int{}
 	modulesLevelSum := map[string]int{}
 	for _, el := range data {
+		if el == "" {
+			continue
+		}
 		arr := strings.Split(el, " ")
 		modulesLevelSum[arr[3]]++
 		if arr[2] == level {
