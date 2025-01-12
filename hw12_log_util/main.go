@@ -31,12 +31,23 @@ func main() {
 	flag.StringVar(&level, "level", os.Getenv("LOG_ANALYZER_LEVEL"), "level for analysis")
 	flag.StringVar(&output, "output", os.Getenv("LOG_ANALYZER_OUTPUT"), "path for output file")
 	flag.Parse()
+	data, err := ReadFile(file)
+	if err != nil {
+		log.Fatalf("read file: %s", err)
+	}
+	statistic := CalcStatistics(data, level)
+
 	fmt.Println(file, level, output)
+	fmt.Println(statistic)
 }
 
-func ReadFile(path string) error {
-	fmt.Println(path)
-	return nil
+func ReadFile(path string) ([]string, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read all in file: %w", err)
+	}
+	result := strings.Split(string(data), "\n")
+	return result, nil
 }
 
 func CalcStatistics(data []string, level string) Statistic {
