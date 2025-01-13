@@ -27,11 +27,16 @@ func main() {
 	var file string
 	var level string
 	var output string
-	flag.StringVar(&file, "file", os.Getenv("LOG_ANALYZER_FILE"), "path log file")
+	flag.StringVar(&file, "file", "", "[required] path log file")
 	// file = "test.log"
-	flag.StringVar(&level, "level", os.Getenv("LOG_ANALYZER_LEVEL"), "level for analysis")
-	flag.StringVar(&output, "output", os.Getenv("LOG_ANALYZER_OUTPUT"), "path for output file")
+	flag.StringVar(&level, "level", os.Getenv("LOG_ANALYZER_LEVEL"), "[optional] level for analysis")
+	flag.StringVar(&output, "output", os.Getenv("LOG_ANALYZER_OUTPUT"), "[optional] path for output file")
+
 	flag.Parse()
+	if file == "" {
+		file = os.Getenv("LOG_ANALYZER_FILE")
+		fmt.Println("flag -file required")
+	}
 	data, err := ReadFile(file)
 	if err != nil {
 		log.Fatalf("read file: %s", err)
