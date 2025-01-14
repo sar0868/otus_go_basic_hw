@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"slices"
 	"strings"
 
 	"github.com/joho/godotenv"
@@ -84,13 +83,12 @@ func CalcStatistic(inChan chan string, level string, outChan chan Statistic) {
 	modulesLevel := map[string]int{}
 	modulesLevelSum := map[string]int{}
 	totalCount := 0
-	levels := []string{"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
 	for el := range inChan {
 		arr := strings.Split(el, " ")
 		if len(arr) < 4 {
 			continue
 		}
-		if !slices.Contains(levels, arr[2]) {
+		if !ContainsLevel(arr[2]) {
 			continue
 		}
 		modulesLevelSum[arr[3]]++
@@ -129,4 +127,14 @@ func WriteFile(data Statistic, level string, output string) error {
 	fmt.Print(text)
 
 	return nil
+}
+
+func ContainsLevel(level string) bool {
+	levels := []string{"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
+	for _, el := range levels {
+		if el == level {
+			return true
+		}
+	}
+	return false
 }
