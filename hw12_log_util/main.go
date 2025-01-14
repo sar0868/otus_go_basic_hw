@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"log"
@@ -29,11 +30,11 @@ func main() {
 	var level string
 	var output string
 	flag.StringVar(&file, "file", "", "[required] path log file")
-	// file = "test.log"
 	flag.StringVar(&level, "level", os.Getenv("LOG_ANALYZER_LEVEL"), "[optional] level for analysis")
 	flag.StringVar(&output, "output", os.Getenv("LOG_ANALYZER_OUTPUT"), "[optional] path for output file")
 
 	flag.Parse()
+	// file = "test.log"
 	if file == "" {
 		file = os.Getenv("LOG_ANALYZER_FILE")
 		fmt.Println("flag -file required")
@@ -43,6 +44,18 @@ func main() {
 		log.Fatalf("read file: %s", err)
 	}
 	statistic := CalcStatistics(data, level)
+
+	inChan := make(chan string)
+	outChan := make(chan Statistic)
+	go CalcStatistic2(inChan, level, outChan)
+	if err2 := ReadFileInChan(file, inChan); err2 != nil {
+		log.Fatalf("read file: %s", err2)
+	}
+
+	result := <-outChan
+
+	close(outChan)
+	fmt.Println(result)
 
 	fmt.Println(file, level, output)
 	fmt.Println(statistic)
@@ -55,6 +68,24 @@ func ReadFile(path string) ([]string, error) {
 	}
 	result := strings.Split(string(data), "\n")
 	return result, nil
+}
+
+func ReadFileInChan(path string, inChan chan string) error {
+	file, err := os.Open(path)
+	if err != nil {
+		return fmt.Errorf("don't open file: %w", err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		inChan <- scanner.Text()
+	}
+	close(inChan)
+	if err2 := scanner.Err(); err2 != nil {
+		return fmt.Errorf("unable to read all in file: %w", err2)
+	}
+	return nil
 }
 
 func CalcStatistics(data []string, level string) Statistic {
@@ -80,12 +111,12 @@ func CalcStatistics(data []string, level string) Statistic {
 	return Statistic{level: level, modules: modules, all: 100 * sumLevel / len(data)}
 }
 
-func CalcStatistic2(ch chan string, level string, out chan Statistic) {
+func CalcStatistic2(inChan chan string, level string, outChan chan Statistic) {
 	modulesLevel := map[string]int{}
 	modulesLevelSum := map[string]int{}
 	totalCount := 0
 	levels := []string{"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
-	for el := range ch {
+	for el := range inChan {
 		arr := strings.Split(el, " ")
 		if len(arr) < 4 {
 			continue
@@ -107,7 +138,7 @@ func CalcStatistic2(ch chan string, level string, out chan Statistic) {
 		modules[module] = 100 * item / modulesLevelSum[module]
 		sumLevel += modulesLevel[module]
 	}
-	out <- Statistic{level: level, modules: modules, all: 100 * sumLevel / totalCount}
+	outChan <- Statistic{level: level, modules: modules, all: 100 * sumLevel / totalCount}
 }
 
 func WriteFile(data map[string]int) error {
