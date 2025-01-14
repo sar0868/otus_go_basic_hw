@@ -12,7 +12,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// 2025-01-09 12:00:00 [TRACE, DEBUG, INFO, WARN, ERROR, FATAL] [module=1...5] text
+// 2025-01-09 12:00:00 [TRACE, DEBUG, INFO, WARN, ERROR, FATAL] [module=1...] text
 // статистика модуль уровень=(%от всех сообщений по модулю count/sum(count)),
 // уровень=(% от всех записей c данным уровнем в файле [count/sum(level)])
 
@@ -34,31 +34,23 @@ func main() {
 	flag.StringVar(&output, "output", os.Getenv("LOG_ANALYZER_OUTPUT"), "[optional] path for output file")
 
 	flag.Parse()
-	// file = "test.log"
 	if file == "" {
 		file = os.Getenv("LOG_ANALYZER_FILE")
 		fmt.Println("flag -file required")
 	}
-	data, err := ReadFile(file)
-	if err != nil {
-		log.Fatalf("read file: %s", err)
-	}
-	statistic := CalcStatistics(data, level)
 
 	inChan := make(chan string)
 	outChan := make(chan Statistic)
-	go CalcStatistic2(inChan, level, outChan)
+	go CalcStatistic(inChan, level, outChan)
 	if err2 := ReadFileInChan(file, inChan); err2 != nil {
 		log.Fatalf("read file: %s", err2)
 	}
-
 	result := <-outChan
-
 	close(outChan)
-	fmt.Println(result)
 
-	fmt.Println(file, level, output)
-	fmt.Println(statistic)
+	if errWF := WriteFile(result, level, output); errWF != nil {
+		log.Fatalf("write file error: %s", errWF)
+	}
 }
 
 func ReadFile(path string) ([]string, error) {
@@ -88,30 +80,7 @@ func ReadFileInChan(path string, inChan chan string) error {
 	return nil
 }
 
-func CalcStatistics(data []string, level string) Statistic {
-	modulesLevel := map[string]int{}
-	modulesLevelSum := map[string]int{}
-	for _, el := range data {
-		if el == "" {
-			continue
-		}
-		arr := strings.Split(el, " ")
-		modulesLevelSum[arr[3]]++
-		if arr[2] == level {
-			modulesLevel[arr[3]]++
-		}
-	}
-	modules := map[string]int{}
-	sumLevel := 0
-
-	for module, item := range modulesLevel {
-		modules[module] = 100 * item / modulesLevelSum[module]
-		sumLevel += modulesLevel[module]
-	}
-	return Statistic{level: level, modules: modules, all: 100 * sumLevel / len(data)}
-}
-
-func CalcStatistic2(inChan chan string, level string, outChan chan Statistic) {
+func CalcStatistic(inChan chan string, level string, outChan chan Statistic) {
 	modulesLevel := map[string]int{}
 	modulesLevelSum := map[string]int{}
 	totalCount := 0
@@ -141,7 +110,23 @@ func CalcStatistic2(inChan chan string, level string, outChan chan Statistic) {
 	outChan <- Statistic{level: level, modules: modules, all: 100 * sumLevel / totalCount}
 }
 
-func WriteFile(data map[string]int) error {
-	fmt.Println(data)
+func WriteFile(data Statistic, level string, output string) error {
+	modules := ""
+	for m, v := range data.modules {
+		modules += fmt.Sprintf("\tpercentage level=%s in messages by module=%s: %d%%\n", level, m, v)
+	}
+	sep := "\t====================\n"
+	all := fmt.Sprintf("\tpercentage level=%s in all messages: %d%%\n", level, data.all)
+	text := fmt.Sprintf("level %s\n%s%s%s%s", level, modules, sep, all, sep)
+
+	if output != "" {
+		info := []byte(text)
+		if err := os.WriteFile(output, info, 0o600); err != nil {
+			return fmt.Errorf("unable to write file: %w", err)
+		}
+		return nil
+	}
+	fmt.Print(text)
+
 	return nil
 }

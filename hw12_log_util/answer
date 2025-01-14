@@ -1,6 +1,0 @@
-level INFO
-    percentage level=INFO in messages by module=module1: 100%
-    percentage level=INFO in messages by module=module2: 0%
-    ===========================================
-    percentage level=INFO in all messages: 100%
-    ===========================================
