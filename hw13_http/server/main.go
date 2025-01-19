@@ -15,6 +15,27 @@ type User struct {
 	Address string `json:"address"`
 }
 
+var users = []User{
+	{
+		ID:      1,
+		Name:    "Aleksey",
+		Age:     56,
+		Address: "Tver",
+	},
+	{
+		ID:      2,
+		Name:    "Irina",
+		Age:     60,
+		Address: "Tver",
+	},
+	{
+		ID:      3,
+		Name:    "Maria",
+		Age:     27,
+		Address: "Tver",
+	},
+}
+
 func main() {
 	var ADDRESS string
 	var PORT string
@@ -26,7 +47,10 @@ func main() {
 
 	http.HandleFunc("/users", getUsers)
 	http.HandleFunc("/hello", hello)
-	// http.ListenAndServe(ADDRESS+":"+PORT, nil)
+	http.HandleFunc("/user", getUser)
+	// if err := http.ListenAndServe(ADDRESS+":"+PORT, nil); err != nil {
+	// 	fmt.Println("Error run server:", err)
+	// }
 	server := &http.Server{
 		Addr:              ADDRESS + ":" + PORT,
 		ReadHeaderTimeout: 3 * time.Second,
@@ -52,25 +76,14 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	users := []User{
-		{
-			ID:      1,
-			Name:    "Aleksey",
-			Age:     56,
-			Address: "Tver",
-		},
-		{
-			ID:      2,
-			Name:    "Irina",
-			Age:     60,
-			Address: "Tver",
-		},
-		{
-			ID:      3,
-			Name:    "Maria",
-			Age:     27,
-			Address: "Tver",
-		},
-	}
 	json.NewEncoder(w).Encode(users)
+}
+
+func getUser(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	fmt.Println(r.Context())
+	w.Header().Set("Content-Type", "application/json")
 }
