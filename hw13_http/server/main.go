@@ -5,31 +5,11 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
-	"github.com/sar0868/otus_go_basic_hw/hw13_http/user"
+	"github.com/sar0868/otus_go_basic_hw/hw13_http/server/dao"
 )
-
-var users = []user.User{
-	{
-		ID:      1,
-		Name:    "Aleksey",
-		Age:     56,
-		Address: "Tver",
-	},
-	{
-		ID:      2,
-		Name:    "Irina",
-		Age:     60,
-		Address: "Tver",
-	},
-	{
-		ID:      3,
-		Name:    "Maria",
-		Age:     27,
-		Address: "Tver",
-	},
-}
 
 func main() {
 	var IP string
@@ -41,7 +21,6 @@ func main() {
 	fmt.Printf("server run: %s:%s\n", IP, PORT)
 
 	http.HandleFunc("/users", getUsers)
-	http.HandleFunc("/hello", hello)
 	http.HandleFunc("/user", getUser)
 	// if err := http.ListenAndServe(ADDRESS+":"+PORT, nil); err != nil {
 	// 	fmt.Println("Error run server:", err)
@@ -57,28 +36,39 @@ func main() {
 	}
 }
 
-func hello(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-	fmt.Fprintf(w, "Hello World")
-}
-
 func getUsers(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+	fmt.Println("Request received get data users")
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(dao.Users)
 }
 
 func getUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
+		fmt.Println("request method not equal POST")
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	fmt.Println(r.Context())
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "Error parsing form", http.StatusBadRequest)
+		return
+	}
+
+	idStr := r.Form.Get("id")
+	fmt.Printf("Request received get data for id %s\n", idStr)
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		fmt.Println("Error convert string to int")
+		return
+	}
+	user, result := dao.GetUser(id)
+	if !result {
+		w.WriteHeader(http.StatusNotAcceptable)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(user)
 }
