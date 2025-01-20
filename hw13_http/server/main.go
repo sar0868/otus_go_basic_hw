@@ -6,16 +6,11 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/sar0868/otus_go_basic_hw/hw13_http/user"
 )
 
-type User struct {
-	ID      int    `json:"id"`
-	Name    string `json:"name"`
-	Age     int    `json:"age"`
-	Address string `json:"address"`
-}
-
-var users = []User{
+var users = []user.User{
 	{
 		ID:      1,
 		Name:    "Aleksey",
