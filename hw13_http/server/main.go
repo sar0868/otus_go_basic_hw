@@ -22,6 +22,7 @@ func main() {
 
 	http.HandleFunc("/users", getUsers)
 	http.HandleFunc("/user", getUser)
+	http.HandleFunc("/add_user", createUser)
 	// if err := http.ListenAndServe(ADDRESS+":"+PORT, nil); err != nil {
 	// 	fmt.Println("Error run server:", err)
 	// }
@@ -47,8 +48,8 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func getUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		fmt.Println("request method not equal POST")
+	if r.Method != "GET" {
+		fmt.Println("request method not equal GET")
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
@@ -66,6 +67,36 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 	}
 	user, result := dao.GetUser(id)
 	if !result {
+		w.WriteHeader(http.StatusNotAcceptable)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(user)
+}
+
+func createUser(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		fmt.Println("request method not equal POST")
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "Error parsing form", http.StatusBadRequest)
+		return
+	}
+	name := r.PostForm.Get("name")
+	// name := r.Form.Get("name")
+	ageStr := r.PostForm.Get("age")
+	address := r.PostForm.Get("address")
+	// fmt.Printf("Request received get data for id %s\n", idStr)
+	fmt.Println(name, ageStr, address)
+	age, err := strconv.Atoi(ageStr)
+	if err != nil {
+		fmt.Println("Error convert string to int")
+		return
+	}
+	user, err := dao.CreateUser(name, age, address)
+	if err != nil {
 		w.WriteHeader(http.StatusNotAcceptable)
 		return
 	}

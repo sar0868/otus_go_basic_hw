@@ -27,35 +27,35 @@ var Users = []user.User{
 	},
 }
 
-func CreateUser(name string, age int, address string) (bool, error) {
+func CreateUser(name string, age int, address string) (*user.User, error) {
 	if age <= 0 {
-		return false, errors.New("age can't be less than 0")
+		return nil, errors.New("age can't be less than 0")
 	}
 	newUser := user.User{ID: nextID(Users), Name: name, Age: age, Address: address}
 	Users = append(Users, newUser)
-	return true, nil
+	return &newUser, nil
 }
 
-func GetUser(id int) (user.User, bool) {
+func GetUser(id int) (*user.User, bool) {
 	for _, user := range Users {
 		if user.ID == id {
-			return user, true
+			return &user, true
 		}
 	}
-	return user.User{}, false
+	return nil, false
 }
 
-func UpdateUser(id int, name string, age int, address string) (bool, error) {
+func UpdateUser(id int, name string, age int, address string) (*user.User, error) {
 	user, status := GetUser(id)
 	if !status {
-		return false, errors.New("don't find user")
+		return nil, errors.New("don't find user")
 	}
 	if err := user.SetAge(age); err != nil {
-		return false, err
+		return nil, err
 	}
 	user.SetName(name)
 	user.SetAddress(address)
-	return true, nil
+	return user, nil
 }
 
 func DeleteUser(id int) (bool, error) {

@@ -16,7 +16,7 @@ func TestCreateUser(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    bool
+		want    *user.User
 		wantErr string
 	}{
 		{
@@ -26,7 +26,12 @@ func TestCreateUser(t *testing.T) {
 				age:     1,
 				address: "City",
 			},
-			want:    true,
+			want: &user.User{
+				ID:      4,
+				Name:    "Name",
+				Age:     1,
+				Address: "City",
+			},
 			wantErr: "",
 		},
 		{
@@ -36,15 +41,15 @@ func TestCreateUser(t *testing.T) {
 				age:     0,
 				address: "City",
 			},
-			want:    false,
+			want:    nil,
 			wantErr: "age can't be less than 0",
 		},
 	}
 	for _, tt := range tests {
 		users := Users
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := CreateUser(tt.args.name, tt.args.age, tt.args.address)
-			assert.Equal(t, tt.want, result)
+			user, err := CreateUser(tt.args.name, tt.args.age, tt.args.address)
+			assert.Equal(t, tt.want, user)
 			if err != nil {
 				assert.Equal(t, tt.wantErr, err.Error())
 			}
@@ -57,34 +62,30 @@ func TestGetUser(t *testing.T) {
 	tests := []struct {
 		name       string
 		id         int
-		want       user.User
-		wantName   string
+		want       *user.User
 		wantResult bool
 	}{
 		{
 			name: "get user id 1, expected user Name = Aleksey result true",
 			id:   1,
-			want: user.User{
+			want: &user.User{
 				ID:      1,
 				Name:    "Aleksey",
 				Age:     56,
 				Address: "Tver",
 			},
-			wantName:   "Aleksey",
 			wantResult: true,
 		},
 		{
-			name:       "get user id 4, expected User{} result false ",
+			name:       "get user id 4, expected nil result false ",
 			id:         4,
-			want:       user.User{},
-			wantName:   "",
+			want:       nil,
 			wantResult: false,
 		},
 		{
-			name:       "get user id -1, expected User{} result false ",
+			name:       "get user id -1, expected nil result false ",
 			id:         -1,
-			want:       user.User{},
-			wantName:   "",
+			want:       nil,
 			wantResult: false,
 		},
 	}
@@ -92,7 +93,6 @@ func TestGetUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, got1 := GetUser(tt.id)
 			assert.Equal(t, tt.want, got)
-			assert.Equal(t, tt.wantName, got.Name)
 			assert.Equal(t, tt.wantResult, got1)
 		})
 	}
@@ -108,7 +108,7 @@ func TestUpdateUser(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    bool
+		want    *user.User
 		wantErr bool
 	}{
 		{
@@ -119,7 +119,12 @@ func TestUpdateUser(t *testing.T) {
 				age:     25,
 				address: "Tver",
 			},
-			want:    true,
+			want: &user.User{
+				ID:      1,
+				Name:    "Aleksey",
+				Age:     25,
+				Address: "Tver",
+			},
 			wantErr: false,
 		},
 		{
@@ -130,7 +135,7 @@ func TestUpdateUser(t *testing.T) {
 				age:     25,
 				address: "Tver",
 			},
-			want:    false,
+			want:    nil,
 			wantErr: true,
 		},
 		{
@@ -141,21 +146,19 @@ func TestUpdateUser(t *testing.T) {
 				age:     -1,
 				address: "Tver",
 			},
-			want:    false,
+			want:    nil,
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		users := Users
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := UpdateUser(tt.args.id, tt.args.name, tt.args.age, tt.args.address)
+			user, err := UpdateUser(tt.args.id, tt.args.name, tt.args.age, tt.args.address)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UpdateUser() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.want {
-				t.Errorf("UpdateUser() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, user)
 		})
 		Users = users
 	}
