@@ -32,13 +32,13 @@ var users = []user.User{
 }
 
 func main() {
-	var ADDRESS string
+	var IP string
 	var PORT string
-	flag.StringVar(&ADDRESS, "address", "127.0.0.1", "- address for server")
+	flag.StringVar(&IP, "address", "127.0.0.1", "- ip for server")
 	flag.StringVar(&PORT, "port", "8080", "- port for server")
 	flag.Parse()
 
-	fmt.Printf("server run: %s:%s\n", ADDRESS, PORT)
+	fmt.Printf("server run: %s:%s\n", IP, PORT)
 
 	http.HandleFunc("/users", getUsers)
 	http.HandleFunc("/hello", hello)
@@ -47,7 +47,7 @@ func main() {
 	// 	fmt.Println("Error run server:", err)
 	// }
 	server := &http.Server{
-		Addr:              ADDRESS + ":" + PORT,
+		Addr:              IP + ":" + PORT,
 		ReadHeaderTimeout: 3 * time.Second,
 		WriteTimeout:      5 * time.Second,
 		IdleTimeout:       10 * time.Second,
