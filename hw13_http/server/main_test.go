@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/sar0868/otus_go_basic_hw/hw13_http/user"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -85,15 +86,16 @@ func Test_getUser(t *testing.T) {
 
 func Test_createUser(t *testing.T) {
 	type args struct {
-		Name    string
-		Age     int
-		Address string
+		Name    string `json:"name"`
+		Age     int    `json:"age"`
+		Address string `json:"address"`
 	}
 	tests := []struct {
-		name   string
-		method string
-		args   args
-		status int
+		name    string
+		method  string
+		args    args
+		status  int
+		newUser *user.User
 	}{
 		{
 			name:   "created user (User, 1, City), status OK",
@@ -104,6 +106,12 @@ func Test_createUser(t *testing.T) {
 				Address: "City",
 			},
 			status: 200,
+			newUser: &user.User{
+				ID:      4,
+				Name:    "User",
+				Age:     1,
+				Address: "City",
+			},
 		},
 		{
 			name:   "created user (User, 0, City), status 406",
@@ -113,7 +121,8 @@ func Test_createUser(t *testing.T) {
 				Age:     0,
 				Address: "City",
 			},
-			status: 406,
+			status:  406,
+			newUser: nil,
 		},
 		{
 			name:   "created user GET (User, 0, City), status 405",
@@ -123,7 +132,8 @@ func Test_createUser(t *testing.T) {
 				Age:     1,
 				Address: "City",
 			},
-			status: 405,
+			status:  405,
+			newUser: nil,
 		},
 	}
 	for _, tt := range tests {
@@ -138,6 +148,12 @@ func Test_createUser(t *testing.T) {
 			w := httptest.NewRecorder()
 			createUser(w, req)
 			assert.Equal(t, tt.status, w.Code)
+			resp := &user.User{}
+			if w.Code != 200 {
+				resp = nil
+			}
+			json.Unmarshal(w.Body.Bytes(), &resp)
+			assert.Equal(t, tt.newUser, resp)
 		})
 	}
 }
