@@ -15,7 +15,7 @@ import (
 func main() {
 	var IP string
 	var PORT string
-	flag.StringVar(&IP, "address", "127.0.0.1", "- ip for server")
+	flag.StringVar(&IP, "ip", "127.0.0.1", "- ip for server")
 	flag.StringVar(&PORT, "port", "8080", "- port for server")
 	flag.Parse()
 
@@ -24,9 +24,6 @@ func main() {
 	http.HandleFunc("/users", getUsers)
 	http.HandleFunc("/user", getUser)
 	http.HandleFunc("/add_user", createUser)
-	// if err := http.ListenAndServe(ADDRESS+":"+PORT, nil); err != nil {
-	// 	fmt.Println("Error run server:", err)
-	// }
 	server := &http.Server{
 		Addr:              IP + ":" + PORT,
 		ReadHeaderTimeout: 3 * time.Second,
