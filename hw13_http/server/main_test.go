@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -77,6 +79,65 @@ func Test_getUser(t *testing.T) {
 			body := w.Body.String()
 			assert.Equal(t, tt.status, res.StatusCode)
 			assert.Equal(t, tt.data, body)
+		})
+	}
+}
+
+func Test_createUser(t *testing.T) {
+	type args struct {
+		Name    string
+		Age     int
+		Address string
+	}
+	tests := []struct {
+		name   string
+		method string
+		args   args
+		status int
+	}{
+		{
+			name:   "created user (User, 1, City), status OK",
+			method: "POST",
+			args: args{
+				Name:    "User",
+				Age:     1,
+				Address: "City",
+			},
+			status: 200,
+		},
+		{
+			name:   "created user (User, 0, City), status 406",
+			method: "POST",
+			args: args{
+				Name:    "User",
+				Age:     0,
+				Address: "City",
+			},
+			status: 406,
+		},
+		{
+			name:   "created user GET (User, 0, City), status 405",
+			method: "GET",
+			args: args{
+				Name:    "User",
+				Age:     1,
+				Address: "City",
+			},
+			status: 405,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			data, err := json.Marshal(tt.args)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			req := httptest.NewRequest(tt.method, "/add_user",
+				bytes.NewBuffer(data))
+			w := httptest.NewRecorder()
+			createUser(w, req)
+			assert.Equal(t, tt.status, w.Code)
 		})
 	}
 }

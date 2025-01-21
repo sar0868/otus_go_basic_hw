@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/sar0868/otus_go_basic_hw/hw13_http/server/dao"
+	"github.com/sar0868/otus_go_basic_hw/hw13_http/user"
 )
 
 func main() {
@@ -80,26 +81,20 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Error parsing form", http.StatusBadRequest)
-		return
-	}
-	name := r.PostForm.Get("name")
-	// name := r.Form.Get("name")
-	ageStr := r.PostForm.Get("age")
-	address := r.PostForm.Get("address")
-	// fmt.Printf("Request received get data for id %s\n", idStr)
-	fmt.Println(name, ageStr, address)
-	age, err := strconv.Atoi(ageStr)
+	var newUser user.User
+	err := json.NewDecoder(r.Body).Decode(&newUser)
 	if err != nil {
-		fmt.Println("Error convert string to int")
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Error decoding JSON: %v", err)
 		return
 	}
-	user, err := dao.CreateUser(name, age, address)
+	user, err := dao.CreateUser(newUser.Name, newUser.Age, newUser.Address)
 	if err != nil {
 		w.WriteHeader(http.StatusNotAcceptable)
 		return
 	}
+	fmt.Printf("Created user:\n\tid=%d\n\tname=%s\n\tage=%d\n\taddress=%s\n",
+		user.ID, user.Name, user.Age, user.Address)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
 }
