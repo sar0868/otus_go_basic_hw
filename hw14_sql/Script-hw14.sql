@@ -1,26 +1,26 @@
 create schema if not exists shop;
 
-create table shop.Users(
+create table if not exists shop.Users(
 	id serial primary key,
 	name varchar(120) not null,
 	email varchar(120),
 	password varchar(120) not null
 );
 
-create table shop.Orders(
+create table if not exists shop.Orders(
 	id serial primary key,
 	user_id integer references shop.Users(id) on delete cascade,
 	order_date timestamptz not null default now(),
 	total_amount numeric not null
 );
 
-create table shop.Products(
+create table if not exists shop.Products(
 	id serial primary key,
 	name text not null,
 	price numeric not null default 0
 );
 
-create table shop.OrderProducts(
+create table if not exists shop.OrderProducts(
 	order_id integer references shop.Orders(id) on delete cascade,
 	product_id integer references shop.Products(id) on delete cascade,
 	primary key(order_id, product_id)
@@ -32,8 +32,6 @@ add quantity numeric not null default 0;
 alter table shop.orders 
 alter column total_amount set default 0;
 
-alter table shop.orders 
-alter column 
 
 
 ================================
