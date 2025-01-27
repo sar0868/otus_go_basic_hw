@@ -26,3 +26,5 @@ ehthumbs.db
 Thumbs.db
 .vscode/
 *.bak
+hw14_sql/.project
+hw14_sql/.dbeaver/project-metadata.json
