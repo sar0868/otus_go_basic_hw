@@ -2,8 +2,6 @@ module github.com/sar0868/otus_go_basic_hw/hw15_go_sql
 
 go 1.23
 
-toolchain go1.23.2
-
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/stretchr/testify v1.10.0
