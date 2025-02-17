@@ -25,7 +25,7 @@ func main() {
 	getUser(getUserURLID2)
 
 	postAddUserURL := fmt.Sprintf("http://%s:%s/add_user", IP, PORT)
-	newUser := user.User{Name: "User", Age: 1, Address: "City"}
+	newUser := users.User{Name: "User", Age: 1, Address: "City"}
 	postAddUser(postAddUserURL, newUser)
 }
 
@@ -47,7 +47,7 @@ func getUsers(url string) {
 		return
 	}
 
-	var users []user.User
+	var users []users.User
 	errUnmarshal := json.Unmarshal(body, &users)
 	if errUnmarshal != nil {
 		fmt.Println("Error deserialization", err)
@@ -73,7 +73,7 @@ func getUser(url string) {
 		fmt.Println("Error read", err)
 		return
 	}
-	var user user.User
+	var user users.User
 	errUnmarshal := json.Unmarshal(body, &user)
 	if errUnmarshal != nil {
 		fmt.Println("Error deserialization", err)
@@ -82,7 +82,7 @@ func getUser(url string) {
 	fmt.Println("User:\n", user)
 }
 
-func postAddUser(url string, newUser user.User) {
+func postAddUser(url string, newUser users.User) {
 	data, errMarshal := json.Marshal(newUser)
 	if errMarshal != nil {
 		fmt.Println("Error serialization", errMarshal)
@@ -105,7 +105,7 @@ func postAddUser(url string, newUser user.User) {
 		fmt.Println("Error read", err)
 		return
 	}
-	var user user.User
+	var user users.User
 	errUnmarshal := json.Unmarshal(body, &user)
 	if errUnmarshal != nil {
 		fmt.Println("Error deserialization", err)

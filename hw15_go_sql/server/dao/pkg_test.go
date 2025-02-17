@@ -3,7 +3,7 @@ package dao
 import (
 	"testing"
 
-	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/user"
+	users "github.com/sar0868/otus_go_basic_hw/hw15_go_sql/user"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -16,7 +16,7 @@ func TestCreateUser(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *user.User
+		want    *users.User
 		wantErr string
 	}{
 		{
@@ -26,7 +26,7 @@ func TestCreateUser(t *testing.T) {
 				age:     1,
 				address: "City",
 			},
-			want: &user.User{
+			want: &users.User{
 				ID:      4,
 				Name:    "Name",
 				Age:     1,
@@ -62,13 +62,13 @@ func TestGetUser(t *testing.T) {
 	tests := []struct {
 		name       string
 		id         int
-		want       *user.User
+		want       *users.User
 		wantResult bool
 	}{
 		{
 			name: "get user id 1, expected user Name = Aleksey result true",
 			id:   1,
-			want: &user.User{
+			want: &users.User{
 				ID:      1,
 				Name:    "Aleksey",
 				Age:     56,
@@ -108,7 +108,7 @@ func TestUpdateUser(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *user.User
+		want    *users.User
 		wantErr bool
 	}{
 		{
@@ -119,7 +119,7 @@ func TestUpdateUser(t *testing.T) {
 				age:     25,
 				address: "Tver",
 			},
-			want: &user.User{
+			want: &users.User{
 				ID:      1,
 				Name:    "Aleksey",
 				Age:     25,
@@ -201,12 +201,12 @@ func TestDeleteUser(t *testing.T) {
 func Test_nextID(t *testing.T) {
 	tests := []struct {
 		name  string
-		users []user.User
+		users []users.User
 		want  int
 	}{
 		{
 			name: "next id = 2",
-			users: []user.User{
+			users: []users.User{
 				{
 					ID:      1,
 					Name:    "Name",
@@ -218,12 +218,12 @@ func Test_nextID(t *testing.T) {
 		},
 		{
 			name:  "next id = 1",
-			users: []user.User{},
+			users: []users.User{},
 			want:  1,
 		},
 		{
 			name: "next id = 3",
-			users: []user.User{
+			users: []users.User{
 				{
 					ID:      2,
 					Name:    "Name",

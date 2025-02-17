@@ -95,7 +95,7 @@ func Test_createUser(t *testing.T) {
 		method  string
 		args    args
 		status  int
-		newUser *user.User
+		newUser *users.User
 	}{
 		{
 			name:   "created user (User, 1, City), status OK",
@@ -106,7 +106,7 @@ func Test_createUser(t *testing.T) {
 				Address: "City",
 			},
 			status: 200,
-			newUser: &user.User{
+			newUser: &users.User{
 				ID:      4,
 				Name:    "User",
 				Age:     1,
@@ -148,7 +148,7 @@ func Test_createUser(t *testing.T) {
 			w := httptest.NewRecorder()
 			createUser(w, req)
 			assert.Equal(t, tt.status, w.Code)
-			resp := &user.User{}
+			resp := &users.User{}
 			if w.Code != 200 {
 				resp = nil
 			}

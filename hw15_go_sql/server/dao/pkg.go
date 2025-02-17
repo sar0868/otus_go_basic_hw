@@ -6,7 +6,7 @@ import (
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/user"
 )
 
-var Users = []user.User{
+var Users = []users.User{
 	{
 		ID:      1,
 		Name:    "Aleksey",
@@ -27,16 +27,16 @@ var Users = []user.User{
 	},
 }
 
-func CreateUser(name string, age int, address string) (*user.User, error) {
+func CreateUser(name string, age int, address string) (*users.User, error) {
 	if age <= 0 {
 		return nil, errors.New("age can't be less than 0")
 	}
-	newUser := user.User{ID: nextID(Users), Name: name, Age: age, Address: address}
+	newUser := users.User{ID: nextID(Users), Name: name, Age: age, Address: address}
 	Users = append(Users, newUser)
 	return &newUser, nil
 }
 
-func GetUser(id int) (*user.User, bool) {
+func GetUser(id int) (*users.User, bool) {
 	for _, user := range Users {
 		if user.ID == id {
 			return &user, true
@@ -45,7 +45,7 @@ func GetUser(id int) (*user.User, bool) {
 	return nil, false
 }
 
-func UpdateUser(id int, name string, age int, address string) (*user.User, error) {
+func UpdateUser(id int, name string, age int, address string) (*users.User, error) {
 	user, status := GetUser(id)
 	if !status {
 		return nil, errors.New("don't find user")
@@ -73,7 +73,7 @@ func DeleteUser(id int) (bool, error) {
 	return true, nil
 }
 
-func nextID(users []user.User) int {
+func nextID(users []users.User) int {
 	lastID := 0
 	for _, user := range users {
 		if user.ID > lastID {
