@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/sar0868/otus_go_basic_hw/hw13_http/server/dao"
-	"github.com/sar0868/otus_go_basic_hw/hw13_http/user"
+	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/server/dao"
+	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/user"
 )
 
 func main() {
