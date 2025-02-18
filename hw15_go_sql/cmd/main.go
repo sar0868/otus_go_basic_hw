@@ -1,9 +1,11 @@
 package main
 
 import (
-	"net/http"
+	"flag"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/handler"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -15,16 +17,23 @@ import (
 // @host localhost:8080/
 
 func main() {
+	var IP string
+	var PORT string
+	flag.StringVar(&IP, "ip", "127.0.0.1", "- ip for server")
+	flag.StringVar(&PORT, "port", "8080", "- port for server")
+	flag.Parse()
+
 	router := gin.Default()
-	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
+
+	handle := handler.New()
+
+	PATH := fmt.Sprintf("%s:%s", IP, PORT)
+	url := ginSwagger.URL("http://" + PATH + "/swagger/doc.json")
 	router.GET("swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"message": "pong"})
-	})
+	handler.InitHandler(router, handle)
 
-	router.GET("/ping2", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"message": "hello"})
-	})
-	router.Run(":8080")
+	if err := router.Run(PATH); err != nil {
+		panic(err)
+	}
 }
