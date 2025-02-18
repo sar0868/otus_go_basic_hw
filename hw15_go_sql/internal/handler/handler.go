@@ -24,6 +24,15 @@ func (h *Handler) GetUsers() gin.HandlerFunc {
 	}
 }
 
+// Get Users
+// @Summary get users
+// @Tags getusers
+// @Accept			json
+// @Produce		json
+// @Success 200 {string} string "Get users"
+// @Failure 400 {string} string "Error"
+// @Router /users [get]
+
 func (h *Handler) GetUserByID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		idStr := c.DefaultQuery("id", "")
