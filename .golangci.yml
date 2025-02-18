@@ -68,6 +68,7 @@ linters:
     - stylecheck
     - tagliatelle
     - thelper
+    - typecheck
     - unconvert
     - unparam
     - unused
