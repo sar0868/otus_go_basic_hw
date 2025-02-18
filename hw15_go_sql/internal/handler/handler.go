@@ -16,6 +16,14 @@ func New() *Handler {
 	return &Handler{}
 }
 
+// Get Users
+// @Summary get users
+// @Tags getusers
+// @Accept			json
+// @Produce		json
+// @Success 200 {string} string "Get users"
+// @Failure 400 {string} string "Error"
+// @Router /users [get].
 func (h *Handler) GetUsers() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		fmt.Println("Request received get data users")
@@ -24,15 +32,15 @@ func (h *Handler) GetUsers() gin.HandlerFunc {
 	}
 }
 
-// Get Users
-// @Summary get users
-// @Tags getusers
+// Get User by id
+// @Summary getUserById
+// @Tags getUserById
 // @Accept			json
 // @Produce		json
-// @Success 200 {string} string "Get users"
+// @Param id query string false "string valid"
+// @Success 200 {string} string "Get user by id"
 // @Failure 400 {string} string "Error"
-// @Router /users [get]
-
+// @Router /user [get].
 func (h *Handler) GetUserByID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		idStr := c.DefaultQuery("id", "")
@@ -56,6 +64,15 @@ func (h *Handler) GetUserByID() gin.HandlerFunc {
 	}
 }
 
+// Add User
+// @Summary addUser
+// @Tags addUser
+// @Accept			json
+// @Produce		json
+// @Param input body models.User true "Модель которую принимает метод"
+// @Success 200 {string} string "Get user by id"
+// @Failure 400 {string} string "Error"
+// @Router /add_user [post].
 func (h *Handler) AddUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var newUser models.User

@@ -1,8 +1,86 @@
-host: localhost:8080/
+definitions:
+  models.User:
+    properties:
+      address:
+        type: string
+      age:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+host: 127.0.0.1:8080/
 info:
   contact: {}
   description: API Server
   title: 'HW15: shop'
   version: "1"
-paths: {}
+paths:
+  /add_user:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get user by id
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: addUser
+      tags:
+      - addUser
+  /user:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: string valid
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get user by id
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: getUserById
+      tags:
+      - getUserById
+  /users:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get users
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get users
+      tags:
+      - getusers
 swagger: "2.0"

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/sar0868/otus_go_basic_hw/hw15_go_sql/docs"
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/handler"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -13,7 +14,8 @@ import (
 // @title HW15: shop
 // @version 1
 // @description API Server
-// @host localhost:8080/
+
+// @host 127.0.0.1:8080/
 
 func main() {
 	var IP string
