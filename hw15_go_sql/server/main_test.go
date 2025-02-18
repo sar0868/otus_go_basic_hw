@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/user"
+	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -95,7 +95,7 @@ func Test_createUser(t *testing.T) {
 		method  string
 		args    args
 		status  int
-		newUser *user.User
+		newUser *models.User
 	}{
 		{
 			name:   "created user (User, 1, City), status OK",
@@ -106,7 +106,7 @@ func Test_createUser(t *testing.T) {
 				Address: "City",
 			},
 			status: 200,
-			newUser: &user.User{
+			newUser: &models.User{
 				ID:      4,
 				Name:    "User",
 				Age:     1,
@@ -148,7 +148,7 @@ func Test_createUser(t *testing.T) {
 			w := httptest.NewRecorder()
 			createUser(w, req)
 			assert.Equal(t, tt.status, w.Code)
-			resp := &user.User{}
+			resp := &models.User{}
 			if w.Code != 200 {
 				resp = nil
 			}

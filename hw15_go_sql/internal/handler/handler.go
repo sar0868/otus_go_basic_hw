@@ -6,8 +6,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/models"
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/server/dao"
-	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/user"
 )
 
 type Handler struct{}
@@ -49,7 +49,7 @@ func (h *Handler) GetUserByID() gin.HandlerFunc {
 
 func (h *Handler) AddUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var newUser user.User
+		var newUser models.User
 		if err := c.ShouldBindJSON(&newUser); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"message": "Invalid request",

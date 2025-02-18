@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/models"
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/server/dao"
-	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/user"
 )
 
 func main() {
@@ -78,7 +78,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	var newUser user.User
+	var newUser models.User
 	err := json.NewDecoder(r.Body).Decode(&newUser)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
