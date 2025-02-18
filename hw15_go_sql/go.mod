@@ -1,6 +1,8 @@
 module github.com/sar0868/otus_go_basic_hw/hw15_go_sql
 
-go 1.20.0
+go 1.22.0
+
+toolchain go1.24.0
 
 require (
 	github.com/gin-gonic/gin v1.10.0
