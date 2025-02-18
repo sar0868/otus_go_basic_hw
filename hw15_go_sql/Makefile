@@ -1,6 +1,6 @@
 # https://github.com/swaggo/gin-swagger
 
-lint:
+lint: 
 	golangci-lint run ./...
 
 test:
