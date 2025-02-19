@@ -2,11 +2,11 @@ package config
 
 import (
 	"fmt"
-	"github.com/caarlos0/env/v11"
-	"github.com/joho/godotenv"
-	_ "github.com/joho/godotenv"
 	"log"
 	"os"
+
+	"github.com/caarlos0/env/v11"
+	"github.com/joho/godotenv"
 )
 
 func Init() (*Cfg, error) {
@@ -27,7 +27,7 @@ func Init() (*Cfg, error) {
 	return cfg, nil
 }
 
-func load() error {
+func load() error { //nolint: unparam
 	cfgEnv := os.Getenv("ENV_FILE")
 	if len(cfgEnv) > 0 {
 		err := godotenv.Load(cfgEnv)
