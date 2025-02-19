@@ -30,9 +30,6 @@ func main() {
 
 	PATH := fmt.Sprintf("%s:%s", IP, PORT)
 	url := ginSwagger.URL("http://" + PATH + "/swagger/doc.json")
-	// ginSwagger.WrapHandler(swaggerFiles.Handler,
-	// 	ginSwagger.URL("http://localhost:8080/swagger/doc.json"),
-	// 	ginSwagger.DefaultModelsExpandDepth(-1))
 	router.GET("swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	handler.InitHandler(router, handle)

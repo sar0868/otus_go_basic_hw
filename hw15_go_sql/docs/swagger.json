@@ -27,7 +27,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/models.AddUser"
                         }
                     }
                 ],
@@ -58,7 +58,7 @@
                 "tags": [
                     "getUserById"
                 ],
-                "summary": "getUserById",
+                "summary": "get User by ID",
                 "parameters": [
                     {
                         "type": "string",
@@ -92,7 +92,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "getusers"
+                    "getUsers"
                 ],
                 "summary": "get users",
                 "responses": {
@@ -113,16 +113,13 @@
         }
     },
     "definitions": {
-        "models.User": {
+        "models.AddUser": {
             "type": "object",
             "properties": {
                 "address": {
                     "type": "string"
                 },
                 "age": {
-                    "type": "integer"
-                },
-                "id": {
                     "type": "integer"
                 },
                 "name": {

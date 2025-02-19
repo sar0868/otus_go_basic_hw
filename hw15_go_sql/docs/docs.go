@@ -34,7 +34,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/models.AddUser"
                         }
                     }
                 ],
@@ -65,7 +65,7 @@ const docTemplate = `{
                 "tags": [
                     "getUserById"
                 ],
-                "summary": "getUserById",
+                "summary": "get User by ID",
                 "parameters": [
                     {
                         "type": "string",
@@ -99,7 +99,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "getusers"
+                    "getUsers"
                 ],
                 "summary": "get users",
                 "responses": {
@@ -120,16 +120,13 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.User": {
+        "models.AddUser": {
             "type": "object",
             "properties": {
                 "address": {
                     "type": "string"
                 },
                 "age": {
-                    "type": "integer"
-                },
-                "id": {
                     "type": "integer"
                 },
                 "name": {

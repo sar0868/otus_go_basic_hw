@@ -18,7 +18,7 @@ func New() *Handler {
 
 // Get Users
 // @Summary get users
-// @Tags getusers
+// @Tags getUsers
 // @Accept			json
 // @Produce		json
 // @Success 200 {string} string "Get users"
@@ -33,7 +33,7 @@ func (h *Handler) GetUsers() gin.HandlerFunc {
 }
 
 // Get User by id
-// @Summary getUserById
+// @Summary get User by ID
 // @Tags getUserById
 // @Accept			json
 // @Produce		json
@@ -69,13 +69,13 @@ func (h *Handler) GetUserByID() gin.HandlerFunc {
 // @Tags addUser
 // @Accept			json
 // @Produce		json
-// @Param input body models.User true "Модель которую принимает метод"
+// @Param input body models.AddUser true "Модель которую принимает метод"
 // @Success 200 {string} string "Get user by id"
 // @Failure 400 {string} string "Error"
 // @Router /add_user [post].
 func (h *Handler) AddUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var newUser models.User
+		var newUser models.AddUser
 		if err := c.ShouldBindJSON(&newUser); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"message": "Invalid request",

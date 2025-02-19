@@ -1,11 +1,9 @@
 definitions:
-  models.User:
+  models.AddUser:
     properties:
       address:
         type: string
       age:
-        type: integer
-      id:
         type: integer
       name:
         type: string
@@ -27,7 +25,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/models.AddUser'
       produces:
       - application/json
       responses:
@@ -62,7 +60,7 @@ paths:
           description: Error
           schema:
             type: string
-      summary: getUserById
+      summary: get User by ID
       tags:
       - getUserById
   /users:
@@ -82,5 +80,5 @@ paths:
             type: string
       summary: get users
       tags:
-      - getusers
+      - getUsers
 swagger: "2.0"
