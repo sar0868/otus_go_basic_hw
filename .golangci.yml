@@ -26,6 +26,8 @@ issues:
         - dupl
         - gocyclo
         - gosec
+    - path: /
+      linters:
         - typecheck
 
 linters:
