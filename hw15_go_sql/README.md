@@ -15,6 +15,7 @@
 
 #### Зачёт от 6 баллов
 
-# https://github.com/swaggo/gin-swagger
+<!-- https://github.com/swaggo/gin-swagger -->
 
-# https://github.com/pressly/goose
+<!-- https://github.com/pressly/goose -->
+<!-- go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest -->
