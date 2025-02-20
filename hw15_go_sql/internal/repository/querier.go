@@ -12,44 +12,14 @@ import (
 
 type Querier interface {
 	OrderCreate(ctx context.Context, arg OrderCreateParams) error
+	OrderCreateByUser(ctx context.Context, name string) error
+	OrderProductCreateByUserAndProductQuanti(ctx context.Context, arg OrderProductCreateByUserAndProductQuantiParams) error
 	OrderProductsCreate(ctx context.Context, arg OrderProductsCreateParams) (pgconn.CommandTag, error)
 	OrderUpdate(ctx context.Context, orderID int32) error
+	OrderUpdateTotalAmountByOrderID(ctx context.Context, orderID int32) error
 	OrdersCreate(ctx context.Context, userID *int32) (pgconn.CommandTag, error)
 	ProductCreate(ctx context.Context, arg ProductCreateParams) (pgconn.CommandTag, error)
 	UserAdd(ctx context.Context, arg UserAddParams) (pgconn.CommandTag, error)
-	// update shop.orders ord
-	// set total_amount=(
-	// select sum(p.price * op.quantity) from
-	// shop.orderproducts op
-	// inner join shop.products p on op.product_id=p.id
-	// where op.order_id = 2
-	// group by op.order_id)
-	// where ord.id  = 2;
-	// insert into shop.Orders (user_id)
-	// values
-	// ((select id from shop.Users where name like 'qwe')
-	// );
-	// insert into shop.Orderproducts
-	// (order_id, product_id, quantity)
-	// values
-	// (
-	// 	(select id from shop.orders
-	// 	where user_id = (select id from shop.Users where name like 'qwe')),
-	// 	(select id from shop.products
-	// where name like 'milk'), 2),
-	// (
-	// 	(select id from shop.orders
-	// 	where user_id = (select id from shop.Users where name like 'qwe')),
-	// 	(select id from shop.products
-	// 	where name like 'bread'), 2);
-	// update shop.orders ord
-	// set total_amount=(
-	// 	select sum(p.price * op.quantity) from
-	// 	shop.orderproducts op
-	// 	inner join shop.products p on op.product_id=p.id
-	// 	where op.order_id = 3
-	// 	group by op.order_id)
-	// where ord.id = 3;
 	// insert into shop.orderproducts
 	// (order_id, product_id, quantity)
 	// values

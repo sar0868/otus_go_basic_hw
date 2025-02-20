@@ -29,6 +29,39 @@ func (q *Queries) OrderCreate(ctx context.Context, arg OrderCreateParams) error 
 	return err
 }
 
+const OrderCreateByUser = `-- name: OrderCreateByUser :exec
+insert into shop.Orders (user_id)
+values ((select id from shop.Users where name like $1))
+`
+
+func (q *Queries) OrderCreateByUser(ctx context.Context, name string) error {
+	_, err := q.db.Exec(ctx, OrderCreateByUser, name)
+	return err
+}
+
+const OrderProductCreateByUserAndProductQuanti = `-- name: OrderProductCreateByUserAndProductQuanti :exec
+insert into shop.Orderproducts 
+(order_id, product_id, quantity)
+values 
+(
+    (select id from shop.orders 
+    where user_id = (select id from shop.Users u where u.name like $1)),
+    (select id from shop.products p where p.name like $2),
+    $3
+)
+`
+
+type OrderProductCreateByUserAndProductQuantiParams struct {
+	Name     string         `db:"name" json:"name"`
+	Name_2   string         `db:"name_2" json:"name_2"`
+	Quantity pgtype.Numeric `db:"quantity" json:"quantity"`
+}
+
+func (q *Queries) OrderProductCreateByUserAndProductQuanti(ctx context.Context, arg OrderProductCreateByUserAndProductQuantiParams) error {
+	_, err := q.db.Exec(ctx, OrderProductCreateByUserAndProductQuanti, arg.Name, arg.Name_2, arg.Quantity)
+	return err
+}
+
 const OrderProductsCreate = `-- name: OrderProductsCreate :execresult
 insert into shop.orderproducts 
 (order_id, product_id, quantity)
@@ -58,6 +91,22 @@ where ord.id  = $1
 
 func (q *Queries) OrderUpdate(ctx context.Context, orderID int32) error {
 	_, err := q.db.Exec(ctx, OrderUpdate, orderID)
+	return err
+}
+
+const OrderUpdateTotalAmountByOrderID = `-- name: OrderUpdateTotalAmountByOrderID :exec
+update shop.orders ord
+set total_amount=(
+	select sum(p.price * op.quantity) from 
+	shop.orderproducts op
+	inner join shop.products p on op.product_id=p.id
+	where op.order_id = $1
+	group by op.order_id)
+where ord.id = $1
+`
+
+func (q *Queries) OrderUpdateTotalAmountByOrderID(ctx context.Context, orderID int32) error {
+	_, err := q.db.Exec(ctx, OrderUpdateTotalAmountByOrderID, orderID)
 	return err
 }
 
@@ -115,54 +164,9 @@ const Users = `-- name: Users :many
 
 
 
-
-
-
-
-
-
 select id, name, email, password from shop.users u
 `
 
-// update shop.orders ord
-// set total_amount=(
-// select sum(p.price * op.quantity) from
-// shop.orderproducts op
-// inner join shop.products p on op.product_id=p.id
-// where op.order_id = 2
-// group by op.order_id)
-// where ord.id  = 2;
-// insert into shop.Orders (user_id)
-// values
-// ((select id from shop.Users where name like 'qwe')
-// );
-// insert into shop.Orderproducts
-// (order_id, product_id, quantity)
-// values
-// (
-//
-//	(select id from shop.orders
-//	where user_id = (select id from shop.Users where name like 'qwe')),
-//	(select id from shop.products
-//
-// where name like 'milk'), 2),
-// (
-//
-//	(select id from shop.orders
-//	where user_id = (select id from shop.Users where name like 'qwe')),
-//	(select id from shop.products
-//	where name like 'bread'), 2);
-//
-// update shop.orders ord
-// set total_amount=(
-//
-//	select sum(p.price * op.quantity) from
-//	shop.orderproducts op
-//	inner join shop.products p on op.product_id=p.id
-//	where op.order_id = 3
-//	group by op.order_id)
-//
-// where ord.id = 3;
 // insert into shop.orderproducts
 // (order_id, product_id, quantity)
 // values

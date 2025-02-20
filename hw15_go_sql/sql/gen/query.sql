@@ -41,12 +41,12 @@ insert into shop.Orderproducts
 values 
 (
     (select id from shop.orders 
-    where user_id = (select id from shop.Users where name like $1)),
-    (select id from shop.products where name like $2),
+    where user_id = (select id from shop.Users u where u.name like $1)),
+    (select id from shop.products p where p.name like $2),
     $3
 );
 
--- name OrderUpdateTotalAmountByOrderID :exec
+-- name: OrderUpdateTotalAmountByOrderID :exec
 update shop.orders ord
 set total_amount=(
 	select sum(p.price * op.quantity) from 
