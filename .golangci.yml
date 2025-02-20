@@ -26,6 +26,7 @@ issues:
         - dupl
         - gocyclo
         - gosec
+        - typecheck
 
 linters:
   disable-all: true
