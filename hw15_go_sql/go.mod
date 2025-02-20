@@ -1,6 +1,6 @@
 module github.com/sar0868/otus_go_basic_hw/hw15_go_sql
 
-go 1.23
+go 1.21
 
 require (
 	github.com/caarlos0/env/v11 v11.3.1
