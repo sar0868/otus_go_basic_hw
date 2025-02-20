@@ -11,77 +11,28 @@ import (
 )
 
 type Querier interface {
+	GetUserOrdersByName(ctx context.Context, name string) ([]*GetUserOrdersByNameRow, error)
 	OrderCreate(ctx context.Context, arg OrderCreateParams) error
 	OrderCreateByUser(ctx context.Context, name string) error
+	OrderDelete(ctx context.Context, id int32) error
 	OrderProductCreateByUserAndProductQuanti(ctx context.Context, arg OrderProductCreateByUserAndProductQuantiParams) error
 	OrderProductsCreate(ctx context.Context, arg OrderProductsCreateParams) (pgconn.CommandTag, error)
 	OrderUpdate(ctx context.Context, orderID int32) error
 	OrderUpdateTotalAmountByOrderID(ctx context.Context, orderID int32) error
+	Orders(ctx context.Context) ([]*ShopOrder, error)
 	OrdersCreate(ctx context.Context, userID *int32) (pgconn.CommandTag, error)
+	OrdersProducts(ctx context.Context) ([]*ShopOrderproduct, error)
 	ProductCreate(ctx context.Context, arg ProductCreateParams) (pgconn.CommandTag, error)
+	ProductDelete(ctx context.Context, name string) error
+	ProductGetRangePrice(ctx context.Context, arg ProductGetRangePriceParams) ([]*ProductGetRangePriceRow, error)
+	ProductUpdate(ctx context.Context, arg ProductUpdateParams) error
+	Products(ctx context.Context) ([]*ShopProduct, error)
 	UserAdd(ctx context.Context, arg UserAddParams) (pgconn.CommandTag, error)
-	// insert into shop.orderproducts
-	// (order_id, product_id, quantity)
-	// values
-	// (2, 2, 2),
-	// (2, 1, 0.3);
-	// insert into shop.Orders (user_id)
-	// values
-	// ((select id from shop.Users where name like 'admi%')),
-	// ((select id from shop.Users where name like 'admi%'));
-	// insert into shop.Orderproducts
-	// (order_id, product_id, quantity)
-	// values
-	// (4, (select id from shop.products where name like 'potat%'), 4.76),
-	// (4, (select id from shop.products where name like 'butter'), 0.8);
-	// insert into shop.Orderproducts
-	// (order_id, product_id, quantity)
-	// values
-	// (5, (select id from shop.products where name like 'milk'), 1);
-	// update shop.orders ord
-	// set total_amount=(
-	// 	select sum(p.price * op.quantity) from
-	// 	shop.orderproducts op
-	// 	inner join shop.products p on op.product_id=p.id
-	// 	where op.order_id = 4
-	// 	group by op.order_id)
-	// where ord.id = 4;
-	// update shop.orders ord
-	// set total_amount=(
-	// 	select sum(p.price * op.quantity) from
-	// 	shop.orderproducts op
-	// 	inner join shop.products p on op.product_id=p.id
-	// 	where op.order_id = 5
-	// 	group by op.order_id)
-	// where ord.id = 5;
-	// --========================
-	// --update data (users, products)
-	// update shop.users
-	// set name = 'user'
-	// where "name" like 'as%';
-	// update shop.products
-	// set price = 102.2
-	// where name like 'mil%';
-	// --========================================
-	// --delete data (users, products, orders)
-	// DELETE from shop.Users
-	// where name='qwe';
-	// delete from shop.products
-	// where name like 'milk';
-	// update shop.orders ord
-	// set total_amount=(
-	// select sum(p.price * op.quantity) from
-	// shop.orderproducts op
-	// inner join shop.products p on op.product_id=p.id
-	// where op.order_id = 1
-	// group by op.order_id);
-	// delete from shop.orders
-	// where id=2;
-	// --========================================
-	// --Напишите запрос на выборку пользователей и выборку товаров
-	// --Напишите запрос на выборку заказов по пользователю
-	// --Напишите запрос на выборку статистики по пользователю (общая сумма заказов/средняя цена товара)
+	UserDelete(ctx context.Context, name string) error
+	UserGetByName(ctx context.Context, name string) (*ShopUser, error)
+	UserUpdate(ctx context.Context, arg UserUpdateParams) error
 	Users(ctx context.Context) ([]*ShopUser, error)
+	UsersSumTotalOrdersAvrPrice(ctx context.Context) ([]*UsersSumTotalOrdersAvrPriceRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

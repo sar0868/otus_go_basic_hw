@@ -12,6 +12,38 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const GetUserOrdersByName = `-- name: GetUserOrdersByName :many
+select u.name as "user", o.id as order_id, o.total_amount from shop.orders o 
+inner join shop.users u on o.user_id = u.id 
+where u.name like $1
+`
+
+type GetUserOrdersByNameRow struct {
+	User        string         `db:"user" json:"user"`
+	OrderID     int32          `db:"order_id" json:"order_id"`
+	TotalAmount pgtype.Numeric `db:"total_amount" json:"total_amount"`
+}
+
+func (q *Queries) GetUserOrdersByName(ctx context.Context, name string) ([]*GetUserOrdersByNameRow, error) {
+	rows, err := q.db.Query(ctx, GetUserOrdersByName, name)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []*GetUserOrdersByNameRow{}
+	for rows.Next() {
+		var i GetUserOrdersByNameRow
+		if err := rows.Scan(&i.User, &i.OrderID, &i.TotalAmount); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const OrderCreate = `-- name: OrderCreate :exec
 insert into shop.orderproducts 
 (order_id, product_id, quantity)
@@ -31,11 +63,21 @@ func (q *Queries) OrderCreate(ctx context.Context, arg OrderCreateParams) error 
 
 const OrderCreateByUser = `-- name: OrderCreateByUser :exec
 insert into shop.Orders (user_id)
-values ((select id from shop.Users where name like $1))
+values ((select id from shop.Users where name = $1))
 `
 
 func (q *Queries) OrderCreateByUser(ctx context.Context, name string) error {
 	_, err := q.db.Exec(ctx, OrderCreateByUser, name)
+	return err
+}
+
+const OrderDelete = `-- name: OrderDelete :exec
+delete from shop.orders 
+where id=$1
+`
+
+func (q *Queries) OrderDelete(ctx context.Context, id int32) error {
+	_, err := q.db.Exec(ctx, OrderDelete, id)
 	return err
 }
 
@@ -45,8 +87,8 @@ insert into shop.Orderproducts
 values 
 (
     (select id from shop.orders 
-    where user_id = (select id from shop.Users u where u.name like $1)),
-    (select id from shop.products p where p.name like $2),
+    where user_id = (select id from shop.Users u where u.name = $1)),
+    (select id from shop.products p where p.name = $2),
     $3
 )
 `
@@ -110,6 +152,35 @@ func (q *Queries) OrderUpdateTotalAmountByOrderID(ctx context.Context, orderID i
 	return err
 }
 
+const Orders = `-- name: Orders :many
+select  id, user_id, order_date, total_amount from shop.orders o
+`
+
+func (q *Queries) Orders(ctx context.Context) ([]*ShopOrder, error) {
+	rows, err := q.db.Query(ctx, Orders)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []*ShopOrder{}
+	for rows.Next() {
+		var i ShopOrder
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.OrderDate,
+			&i.TotalAmount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const OrdersCreate = `-- name: OrdersCreate :execresult
 insert into shop.Orders(user_id)
 values ($1)
@@ -117,6 +188,30 @@ values ($1)
 
 func (q *Queries) OrdersCreate(ctx context.Context, userID *int32) (pgconn.CommandTag, error) {
 	return q.db.Exec(ctx, OrdersCreate, userID)
+}
+
+const OrdersProducts = `-- name: OrdersProducts :many
+select order_id, product_id, quantity from shop.orderproducts op
+`
+
+func (q *Queries) OrdersProducts(ctx context.Context) ([]*ShopOrderproduct, error) {
+	rows, err := q.db.Query(ctx, OrdersProducts)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []*ShopOrderproduct{}
+	for rows.Next() {
+		var i ShopOrderproduct
+		if err := rows.Scan(&i.OrderID, &i.ProductID, &i.Quantity); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const ProductCreate = `-- name: ProductCreate :execresult
@@ -131,6 +226,92 @@ type ProductCreateParams struct {
 
 func (q *Queries) ProductCreate(ctx context.Context, arg ProductCreateParams) (pgconn.CommandTag, error) {
 	return q.db.Exec(ctx, ProductCreate, arg.Name, arg.Price)
+}
+
+const ProductDelete = `-- name: ProductDelete :exec
+delete from shop.products 
+where name = $1
+`
+
+func (q *Queries) ProductDelete(ctx context.Context, name string) error {
+	_, err := q.db.Exec(ctx, ProductDelete, name)
+	return err
+}
+
+const ProductGetRangePrice = `-- name: ProductGetRangePrice :many
+select name, price from shop.products p 
+where price between $1 and $2
+order by price
+`
+
+type ProductGetRangePriceParams struct {
+	Price   pgtype.Numeric `db:"price" json:"price"`
+	Price_2 pgtype.Numeric `db:"price_2" json:"price_2"`
+}
+
+type ProductGetRangePriceRow struct {
+	Name  string         `db:"name" json:"name"`
+	Price pgtype.Numeric `db:"price" json:"price"`
+}
+
+func (q *Queries) ProductGetRangePrice(ctx context.Context, arg ProductGetRangePriceParams) ([]*ProductGetRangePriceRow, error) {
+	rows, err := q.db.Query(ctx, ProductGetRangePrice, arg.Price, arg.Price_2)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []*ProductGetRangePriceRow{}
+	for rows.Next() {
+		var i ProductGetRangePriceRow
+		if err := rows.Scan(&i.Name, &i.Price); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const ProductUpdate = `-- name: ProductUpdate :exec
+update shop.products
+set price = $1
+where name = $2
+`
+
+type ProductUpdateParams struct {
+	Price pgtype.Numeric `db:"price" json:"price"`
+	Name  string         `db:"name" json:"name"`
+}
+
+func (q *Queries) ProductUpdate(ctx context.Context, arg ProductUpdateParams) error {
+	_, err := q.db.Exec(ctx, ProductUpdate, arg.Price, arg.Name)
+	return err
+}
+
+const Products = `-- name: Products :many
+select id, name, price from shop.products p
+`
+
+func (q *Queries) Products(ctx context.Context) ([]*ShopProduct, error) {
+	rows, err := q.db.Query(ctx, Products)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []*ShopProduct{}
+	for rows.Next() {
+		var i ShopProduct
+		if err := rows.Scan(&i.ID, &i.Name, &i.Price); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const UserAdd = `-- name: UserAdd :execresult
@@ -148,90 +329,53 @@ func (q *Queries) UserAdd(ctx context.Context, arg UserAddParams) (pgconn.Comman
 	return q.db.Exec(ctx, UserAdd, arg.Name, arg.Email, arg.Password)
 }
 
+const UserDelete = `-- name: UserDelete :exec
+DELETE from shop.Users
+where name=$1
+`
+
+func (q *Queries) UserDelete(ctx context.Context, name string) error {
+	_, err := q.db.Exec(ctx, UserDelete, name)
+	return err
+}
+
+const UserGetByName = `-- name: UserGetByName :one
+select id, name, email, password from shop.users u 
+where name = $1
+`
+
+func (q *Queries) UserGetByName(ctx context.Context, name string) (*ShopUser, error) {
+	row := q.db.QueryRow(ctx, UserGetByName, name)
+	var i ShopUser
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+	)
+	return &i, err
+}
+
+const UserUpdate = `-- name: UserUpdate :exec
+update shop.users 
+set name = $1
+where "name" = $2
+`
+
+type UserUpdateParams struct {
+	Name   string `db:"name" json:"name"`
+	Name_2 string `db:"name_2" json:"name_2"`
+}
+
+func (q *Queries) UserUpdate(ctx context.Context, arg UserUpdateParams) error {
+	_, err := q.db.Exec(ctx, UserUpdate, arg.Name, arg.Name_2)
+	return err
+}
+
 const Users = `-- name: Users :many
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 select id, name, email, password from shop.users u
 `
 
-// insert into shop.orderproducts
-// (order_id, product_id, quantity)
-// values
-// (2, 2, 2),
-// (2, 1, 0.3);
-// insert into shop.Orders (user_id)
-// values
-// ((select id from shop.Users where name like 'admi%')),
-// ((select id from shop.Users where name like 'admi%'));
-// insert into shop.Orderproducts
-// (order_id, product_id, quantity)
-// values
-// (4, (select id from shop.products where name like 'potat%'), 4.76),
-// (4, (select id from shop.products where name like 'butter'), 0.8);
-// insert into shop.Orderproducts
-// (order_id, product_id, quantity)
-// values
-// (5, (select id from shop.products where name like 'milk'), 1);
-// update shop.orders ord
-// set total_amount=(
-//
-//	select sum(p.price * op.quantity) from
-//	shop.orderproducts op
-//	inner join shop.products p on op.product_id=p.id
-//	where op.order_id = 4
-//	group by op.order_id)
-//
-// where ord.id = 4;
-// update shop.orders ord
-// set total_amount=(
-//
-//	select sum(p.price * op.quantity) from
-//	shop.orderproducts op
-//	inner join shop.products p on op.product_id=p.id
-//	where op.order_id = 5
-//	group by op.order_id)
-//
-// where ord.id = 5;
-// --========================
-// --update data (users, products)
-// update shop.users
-// set name = 'user'
-// where "name" like 'as%';
-// update shop.products
-// set price = 102.2
-// where name like 'mil%';
-// --========================================
-// --delete data (users, products, orders)
-// DELETE from shop.Users
-// where name='qwe';
-// delete from shop.products
-// where name like 'milk';
-// update shop.orders ord
-// set total_amount=(
-// select sum(p.price * op.quantity) from
-// shop.orderproducts op
-// inner join shop.products p on op.product_id=p.id
-// where op.order_id = 1
-// group by op.order_id);
-// delete from shop.orders
-// where id=2;
-// --========================================
-// --Напишите запрос на выборку пользователей и выборку товаров
-// --Напишите запрос на выборку заказов по пользователю
-// --Напишите запрос на выборку статистики по пользователю (общая сумма заказов/средняя цена товара)
 func (q *Queries) Users(ctx context.Context) ([]*ShopUser, error) {
 	rows, err := q.db.Query(ctx, Users)
 	if err != nil {
@@ -247,6 +391,41 @@ func (q *Queries) Users(ctx context.Context) ([]*ShopUser, error) {
 			&i.Email,
 			&i.Password,
 		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const UsersSumTotalOrdersAvrPrice = `-- name: UsersSumTotalOrdersAvrPrice :many
+select u.name as "user", sum(o.total_amount) as total_orders, avg(p.price) as "avr price" 
+from shop.orders o  
+inner join shop.orderproducts op on o.id = op.order_id 
+inner join shop.products p on op.product_id = p.id 
+right join shop.Users u on o.user_id = u.id 
+group by u.name
+`
+
+type UsersSumTotalOrdersAvrPriceRow struct {
+	User        string  `db:"user" json:"user"`
+	TotalOrders int64   `db:"total_orders" json:"total_orders"`
+	AvrPrice    float64 `db:"avr price" json:"avr price"`
+}
+
+func (q *Queries) UsersSumTotalOrdersAvrPrice(ctx context.Context) ([]*UsersSumTotalOrdersAvrPriceRow, error) {
+	rows, err := q.db.Query(ctx, UsersSumTotalOrdersAvrPrice)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []*UsersSumTotalOrdersAvrPriceRow{}
+	for rows.Next() {
+		var i UsersSumTotalOrdersAvrPriceRow
+		if err := rows.Scan(&i.User, &i.TotalOrders, &i.AvrPrice); err != nil {
 			return nil, err
 		}
 		items = append(items, &i)
