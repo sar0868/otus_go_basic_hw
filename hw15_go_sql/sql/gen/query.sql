@@ -95,7 +95,7 @@ select * from shop.users u
 where name = $1;
 
 -- name: ProductGetRangePrice :many
-select name, price from shop.products p 
+select * from shop.products p 
 where price between $1 and $2
 order by price ;
 

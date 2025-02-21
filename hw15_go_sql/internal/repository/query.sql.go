@@ -239,7 +239,7 @@ func (q *Queries) ProductDelete(ctx context.Context, name string) error {
 }
 
 const ProductGetRangePrice = `-- name: ProductGetRangePrice :many
-select name, price from shop.products p 
+select id, name, price from shop.products p 
 where price between $1 and $2
 order by price
 `
@@ -249,21 +249,16 @@ type ProductGetRangePriceParams struct {
 	Price_2 pgtype.Numeric `db:"price_2" json:"price_2"`
 }
 
-type ProductGetRangePriceRow struct {
-	Name  string         `db:"name" json:"name"`
-	Price pgtype.Numeric `db:"price" json:"price"`
-}
-
-func (q *Queries) ProductGetRangePrice(ctx context.Context, arg ProductGetRangePriceParams) ([]*ProductGetRangePriceRow, error) {
+func (q *Queries) ProductGetRangePrice(ctx context.Context, arg ProductGetRangePriceParams) ([]*ShopProduct, error) {
 	rows, err := q.db.Query(ctx, ProductGetRangePrice, arg.Price, arg.Price_2)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []*ProductGetRangePriceRow{}
+	items := []*ShopProduct{}
 	for rows.Next() {
-		var i ProductGetRangePriceRow
-		if err := rows.Scan(&i.Name, &i.Price); err != nil {
+		var i ShopProduct
+		if err := rows.Scan(&i.ID, &i.Name, &i.Price); err != nil {
 			return nil, err
 		}
 		items = append(items, &i)
