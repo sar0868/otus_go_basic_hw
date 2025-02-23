@@ -12,7 +12,6 @@ import (
 
 type Querier interface {
 	GetUserOrdersByName(ctx context.Context, name string) ([]*GetUserOrdersByNameRow, error)
-	OrderCreate(ctx context.Context, arg OrderCreateParams) error
 	OrderCreateByUser(ctx context.Context, name string) error
 	OrderDelete(ctx context.Context, id int32) error
 	OrderProductCreateByUserAndProductQuanti(ctx context.Context, arg OrderProductCreateByUserAndProductQuantiParams) error
@@ -27,7 +26,7 @@ type Querier interface {
 	ProductGetRangePrice(ctx context.Context, arg ProductGetRangePriceParams) ([]*ShopProduct, error)
 	ProductUpdate(ctx context.Context, arg ProductUpdateParams) error
 	Products(ctx context.Context) ([]*ShopProduct, error)
-	UserAdd(ctx context.Context, arg UserAddParams) (pgconn.CommandTag, error)
+	UserAdd(ctx context.Context, arg UserAddParams) (int32, error)
 	UserDelete(ctx context.Context, name string) error
 	UserGetByName(ctx context.Context, name string) (*ShopUser, error)
 	UserUpdate(ctx context.Context, arg UserUpdateParams) error
