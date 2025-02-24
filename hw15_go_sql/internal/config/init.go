@@ -28,6 +28,10 @@ func Init() (*Cfg, error) {
 }
 
 func load() error { //nolint: unparam
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("No .env file found: %v", err)
+	}
+
 	cfgEnv := os.Getenv("ENV_FILE")
 	if len(cfgEnv) > 0 {
 		err := godotenv.Load(cfgEnv)
