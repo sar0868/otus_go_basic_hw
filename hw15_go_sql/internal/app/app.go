@@ -1,0 +1,35 @@
+package app
+
+import (
+	"context"
+	"fmt"
+	"net"
+	"strconv"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/config"
+)
+
+func NewDB(ctx context.Context, dbCfg config.DB) (*pgxpool.Pool, error) {
+	connConfig, err := pgx.ParseConfig(
+		fmt.Sprintf(
+			"postgres://%s:%s@%s/%s?TimeZone=Europe/Moscow",
+			dbCfg.User,
+			dbCfg.Password,
+			net.JoinHostPort(dbCfg.Host, strconv.Itoa(dbCfg.Port)),
+			dbCfg.Database,
+		),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create DSN for DB connection: %w", err)
+	}
+	dbc, errPgx := pgxpool.New(ctx, connConfig.ConnString())
+	if errPgx != nil {
+		return nil, fmt.Errorf("failed to connect to DB: %w", errPgx)
+	}
+	if errPing := dbc.Ping(ctx); errPing != nil {
+		return nil, fmt.Errorf("failed to ping DB: %w", errPing)
+	}
+	return dbc, nil
+}
