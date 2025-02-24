@@ -19,3 +19,6 @@ sql:
           - go_type: "int64"
             db_type: "integer"
             null: true
+          - go_type: "int"
+            db_type: "serial"
+            null: true

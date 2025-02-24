@@ -3,13 +3,35 @@ package app
 import (
 	"context"
 	"fmt"
+	"log"
 	"net"
 	"strconv"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/config"
+	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/repository"
 )
+
+var (
+	Ctx  context.Context
+	Repo repository.Querier
+)
+
+func Init() *config.Cfg {
+	Ctx = context.Background()
+	conf, err := config.Init()
+	if err != nil {
+		log.Panicln(err.Error())
+	}
+	db, errDB := NewDB(Ctx, conf.DB)
+	if errDB != nil {
+		log.Panicln(errDB.Error())
+	}
+	log.Println("Connected to database")
+	Repo = repository.New(db)
+	return conf
+}
 
 func NewDB(ctx context.Context, dbCfg config.DB) (*pgxpool.Pool, error) {
 	connConfig, err := pgx.ParseConfig(

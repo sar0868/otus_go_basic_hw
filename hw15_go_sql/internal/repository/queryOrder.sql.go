@@ -26,7 +26,7 @@ delete from shop.orders
 where id=$1
 `
 
-func (q *Queries) OrderDelete(ctx context.Context, id int32) error {
+func (q *Queries) OrderDelete(ctx context.Context, id int) error {
 	_, err := q.db.Exec(ctx, OrderDelete, id)
 	return err
 }

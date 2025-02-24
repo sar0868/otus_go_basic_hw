@@ -9,7 +9,7 @@ import (
 )
 
 type ShopOrder struct {
-	ID          int32              `db:"id" json:"id"`
+	ID          int                `db:"id" json:"id"`
 	UserID      *int32             `db:"user_id" json:"user_id"`
 	OrderDate   pgtype.Timestamptz `db:"order_date" json:"order_date"`
 	TotalAmount pgtype.Numeric     `db:"total_amount" json:"total_amount"`
@@ -22,13 +22,13 @@ type ShopOrderproduct struct {
 }
 
 type ShopProduct struct {
-	ID    int32          `db:"id" json:"id"`
+	ID    int            `db:"id" json:"id"`
 	Name  string         `db:"name" json:"name"`
 	Price pgtype.Numeric `db:"price" json:"price"`
 }
 
 type ShopUser struct {
-	ID       int32   `db:"id" json:"id"`
+	ID       int     `db:"id" json:"id"`
 	Name     string  `db:"name" json:"name"`
 	Email    *string `db:"email" json:"email"`
 	Password string  `db:"password" json:"password"`

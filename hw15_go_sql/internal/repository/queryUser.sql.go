@@ -19,7 +19,7 @@ where u.name like $1
 
 type GetUserOrdersByNameRow struct {
 	User        string         `db:"user" json:"user"`
-	OrderID     int32          `db:"order_id" json:"order_id"`
+	OrderID     int            `db:"order_id" json:"order_id"`
 	TotalAmount pgtype.Numeric `db:"total_amount" json:"total_amount"`
 }
 
@@ -54,11 +54,28 @@ type UserAddParams struct {
 	Password string  `db:"password" json:"password"`
 }
 
-func (q *Queries) UserAdd(ctx context.Context, arg UserAddParams) (int32, error) {
+func (q *Queries) UserAdd(ctx context.Context, arg UserAddParams) (int, error) {
 	row := q.db.QueryRow(ctx, UserAdd, arg.Name, arg.Email, arg.Password)
-	var id int32
+	var id int
 	err := row.Scan(&id)
 	return id, err
+}
+
+const UserByID = `-- name: UserByID :one
+select id, name, email, password from shop.Users u
+where u.id = $1
+`
+
+func (q *Queries) UserByID(ctx context.Context, id int) (*ShopUser, error) {
+	row := q.db.QueryRow(ctx, UserByID, id)
+	var i ShopUser
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+	)
+	return &i, err
 }
 
 const UserDelete = `-- name: UserDelete :exec

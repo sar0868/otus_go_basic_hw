@@ -32,3 +32,7 @@ inner join shop.orderproducts op on o.id = op.order_id
 inner join shop.products p on op.product_id = p.id 
 right join shop.Users u on o.user_id = u.id 
 group by u.name;
+
+-- name: UserByID :one
+select * from shop.Users u
+where u.id = $1;
