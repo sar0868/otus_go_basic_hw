@@ -118,7 +118,6 @@ func (h *Handler) DeleteUser() gin.HandlerFunc {
 			return
 		}
 		msg := fmt.Sprintf("User name %s delete", name)
-
 		c.JSON(http.StatusOK, gin.H{
 			"message": msg,
 		})

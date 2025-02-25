@@ -8,13 +8,12 @@ package repository
 import (
 	"context"
 
-	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const ProductCreate = `-- name: ProductCreate :execresult
+const ProductCreate = `-- name: ProductCreate :one
 insert into shop.Products(name, price)
-values ($1, $2)
+values ($1, $2) returning id
 `
 
 type ProductCreateParams struct {
@@ -22,8 +21,11 @@ type ProductCreateParams struct {
 	Price pgtype.Numeric `db:"price" json:"price"`
 }
 
-func (q *Queries) ProductCreate(ctx context.Context, arg ProductCreateParams) (pgconn.CommandTag, error) {
-	return q.db.Exec(ctx, ProductCreate, arg.Name, arg.Price)
+func (q *Queries) ProductCreate(ctx context.Context, arg ProductCreateParams) (int, error) {
+	row := q.db.QueryRow(ctx, ProductCreate, arg.Name, arg.Price)
+	var id int
+	err := row.Scan(&id)
+	return id, err
 }
 
 const ProductDelete = `-- name: ProductDelete :exec
@@ -34,6 +36,30 @@ where name = $1
 func (q *Queries) ProductDelete(ctx context.Context, name string) error {
 	_, err := q.db.Exec(ctx, ProductDelete, name)
 	return err
+}
+
+const ProductGetById = `-- name: ProductGetById :one
+select id, name, price from shop.products p 
+where p.id = $1
+`
+
+func (q *Queries) ProductGetById(ctx context.Context, id int) (*ShopProduct, error) {
+	row := q.db.QueryRow(ctx, ProductGetById, id)
+	var i ShopProduct
+	err := row.Scan(&i.ID, &i.Name, &i.Price)
+	return &i, err
+}
+
+const ProductGetByName = `-- name: ProductGetByName :one
+select id, name, price from shop.products p 
+where p.name = $1
+`
+
+func (q *Queries) ProductGetByName(ctx context.Context, name string) (*ShopProduct, error) {
+	row := q.db.QueryRow(ctx, ProductGetByName, name)
+	var i ShopProduct
+	err := row.Scan(&i.ID, &i.Name, &i.Price)
+	return &i, err
 }
 
 const ProductGetRangePrice = `-- name: ProductGetRangePrice :many
