@@ -14,7 +14,7 @@ type ParamUser struct {
 }
 
 func Users(ctx context.Context, repo repository.Querier) ([]*repository.ShopUser, error) {
-	users, err := repository.Querier.Users(repo, ctx)
+	users, err := repo.Users(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -27,18 +27,18 @@ func GetUserByParam(ctx context.Context, repo repository.Querier, params []Param
 		case "id":
 			id, err := strconv.Atoi(params[0].Value)
 			if err != nil {
-				return nil, fmt.Errorf("error convert string to int")
+				return nil, fmt.Errorf("error convert string to int: %w", err)
 			}
-			user, errGetUser := repository.Querier.UserByID(repo, ctx, id)
+			user, errGetUser := GetUserByID(ctx, repo, id)
 			if errGetUser != nil {
-				return nil, fmt.Errorf("don't found data for id= %d", id)
+				return nil, fmt.Errorf("error: %w", errGetUser)
 			}
 			return user, nil
 		case "name":
 			name := params[0].Value
-			user, err := repository.Querier.UserGetByName(repo, ctx, name)
+			user, err := GetUserByName(ctx, repo, name)
 			if err != nil {
-				return nil, fmt.Errorf("don't found data for name=%s", name)
+				return nil, fmt.Errorf("error: %w", err)
 			}
 			return user, nil
 		}
@@ -47,18 +47,49 @@ func GetUserByParam(ctx context.Context, repo repository.Querier, params []Param
 }
 
 func AddUser(ctx context.Context, repo repository.Querier, newUser repository.UserAddParams) (*repository.ShopUser, error) { //nolint: lll
-	id, err := repository.Querier.UserAdd(repo, ctx, newUser)
+	id, err := repo.UserAdd(ctx, newUser)
 	if err != nil {
 		return nil, fmt.Errorf("don't create user: %w", err)
 	}
-	user, _ := repository.Querier.UserByID(repo, ctx, id)
+	user, errGetUser := GetUserByID(ctx, repo, id)
+	if errGetUser != nil {
+		return nil, fmt.Errorf("don't found data for id=%d: %w", id, err)
+	}
 	return user, nil
 }
 
 func DeleteUser(ctx context.Context, repo repository.Querier, name string) error {
-	err := repository.Querier.UserDelete(repo, ctx, name)
+	err := repo.UserDelete(ctx, name)
 	if err != nil {
 		return fmt.Errorf("error delete user: %w", err)
+	}
+	return nil
+}
+
+func GetUserByID(ctx context.Context, repo repository.Querier, id int) (*repository.ShopUser, error) {
+	user, err := repo.UserByID(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("don't found data for id= %d", id)
+	}
+	return user, nil
+}
+
+func GetUserByName(ctx context.Context, repo repository.Querier, name string) (*repository.ShopUser, error) {
+	user, err := repo.UserGetByName(ctx, name)
+	if err != nil {
+		return nil, fmt.Errorf("don't found user for username= %v: %w", name, err)
+	}
+	return user, nil
+}
+
+func UserUpdate(ctx context.Context, repo repository.Querier, name string, newName string) error {
+	userUpdateParams := repository.UserUpdateParams{
+		Name:   name,
+		Name_2: newName,
+	}
+	err := repo.UserUpdate(ctx, userUpdateParams)
+	if err != nil {
+		return fmt.Errorf("don't change name: %w", err)
 	}
 	return nil
 }

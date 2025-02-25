@@ -13,7 +13,7 @@ type ParamProduct struct {
 }
 
 func Products(ctx context.Context, repo repository.Querier) ([]*repository.ShopProduct, error) {
-	products, err := repository.Querier.Products(repo, ctx)
+	products, err := repo.Products(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -21,7 +21,7 @@ func Products(ctx context.Context, repo repository.Querier) ([]*repository.ShopP
 }
 
 func GetProductsByName(ctx context.Context, repo repository.Querier, name string) (*repository.ShopProduct, error) {
-	product, err := repository.Querier.ProductGetByName(repo, ctx, name)
+	product, err := repo.ProductGetByName(ctx, name)
 	if err != nil {
 		return nil, fmt.Errorf("don't found product for name=%s", name)
 	}
@@ -29,16 +29,16 @@ func GetProductsByName(ctx context.Context, repo repository.Querier, name string
 }
 
 func AddProduct(ctx context.Context, repo repository.Querier, newProduct repository.ProductCreateParams) (*repository.ShopProduct, error) { //nolint: lll
-	id, err := repository.Querier.ProductCreate(repo, ctx, newProduct)
+	id, err := repo.ProductCreate(ctx, newProduct)
 	if err != nil {
 		return nil, fmt.Errorf("don't create product: %w", err)
 	}
-	product, _ := repository.Querier.ProductGetById(repo, ctx, id)
+	product, _ := repo.ProductGetById(ctx, id)
 	return product, nil
 }
 
 func DeleteProduct(ctx context.Context, repo repository.Querier, name string) error {
-	err := repository.Querier.ProductDelete(repo, ctx, name)
+	err := repo.ProductDelete(ctx, name)
 	if err != nil {
 		return fmt.Errorf("error delete product: %w", err)
 	}
