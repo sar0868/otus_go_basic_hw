@@ -86,7 +86,7 @@ func (h *Handler) AddUser() gin.HandlerFunc {
 			})
 			return
 		}
-		user, err := repository.Querier.UserAdd(app.Repo, app.Ctx, newUser)
+		user, err := service.AddUser(app.Ctx, app.Repo, newUser)
 		if err != nil {
 			c.JSON(http.StatusNotAcceptable, gin.H{
 				"error": fmt.Sprintf("Error add user: %v", err),
@@ -94,5 +94,33 @@ func (h *Handler) AddUser() gin.HandlerFunc {
 			return
 		}
 		c.JSON(http.StatusOK, user)
+	}
+}
+
+// Delete User by name
+// @Summary delete User by name
+// @Tags deleteUserByName
+// @Accept			json
+// @Produce		json
+// @Param name query string true "string valid"
+// @Success 200 {string} string "Delete user by name"
+// @Failure 400 {string} string "Error"
+// @Router /del_user [delete].
+func (h *Handler) DeleteUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		name := c.DefaultQuery("name", "")
+		err := service.DeleteUser(app.Ctx, app.Repo, name)
+		if err != nil {
+			msg := fmt.Sprintf("Error delete user by name %s: %s", name, err)
+			c.JSON(http.StatusNotAcceptable, gin.H{
+				"message": msg,
+			})
+			return
+		}
+		msg := fmt.Sprintf("User name %s delete", name)
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": msg,
+		})
 	}
 }

@@ -54,6 +54,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/del_user": {
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "deleteUserByName"
+                ],
+                "summary": "delete User by name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "string valid",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete user by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "get": {
                 "consumes": [

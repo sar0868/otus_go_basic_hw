@@ -45,3 +45,20 @@ func GetUserByParam(ctx context.Context, repo repository.Querier, params []Param
 	}
 	return nil, fmt.Errorf("request incorrect")
 }
+
+func AddUser(ctx context.Context, repo repository.Querier, newUser repository.UserAddParams) (*repository.ShopUser, error) { //nolint: lll
+	id, err := repository.Querier.UserAdd(repo, ctx, newUser)
+	if err != nil {
+		return nil, fmt.Errorf("don't create user: %w", err)
+	}
+	user, _ := repository.Querier.UserByID(repo, ctx, id)
+	return user, nil
+}
+
+func DeleteUser(ctx context.Context, repo repository.Querier, name string) error {
+	err := repository.Querier.UserDelete(repo, ctx, name)
+	if err != nil {
+		return fmt.Errorf("error delete user: %w", err)
+	}
+	return nil
+}

@@ -40,6 +40,30 @@ paths:
       summary: addUser
       tags:
       - addUser
+  /del_user:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: string valid
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Delete user by name
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: delete User by name
+      tags:
+      - deleteUserByName
   /user:
     get:
       consumes:
