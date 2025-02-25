@@ -34,13 +34,13 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.AddUser"
+                            "$ref": "#/definitions/repository.UserAddParams"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Get user by id",
+                        "description": "Added user",
                         "schema": {
                             "type": "string"
                         }
@@ -63,20 +63,26 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "getUserById"
+                    "getUserByParameters"
                 ],
-                "summary": "get User by ID",
+                "summary": "get User by parameters",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "string valid",
                         "name": "id",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "string valid",
+                        "name": "name",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Get user by id",
+                        "description": "Get user by parameters",
                         "schema": {
                             "type": "string"
                         }
@@ -120,16 +126,16 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.AddUser": {
+        "repository.UserAddParams": {
             "type": "object",
             "properties": {
-                "address": {
+                "email": {
                     "type": "string"
                 },
-                "age": {
-                    "type": "integer"
-                },
                 "name": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }
@@ -140,7 +146,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1",
-	Host:             "127.0.0.1:8080/",
+	Host:             "0.0.0.0:8080/",
 	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "HW15: shop",

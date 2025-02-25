@@ -3,11 +3,11 @@ package handler
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/app"
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/repository"
+	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/service"
 )
 
 // Get Users
@@ -21,7 +21,7 @@ import (
 func (h *Handler) GetUsers() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		fmt.Println("Request received get data users")
-		users, err := repository.Querier.Users(app.Repo, app.Ctx)
+		users, err := service.Users(app.Ctx, app.Repo)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, err)
 		}
@@ -29,30 +29,36 @@ func (h *Handler) GetUsers() gin.HandlerFunc {
 	}
 }
 
-// Get User by id
-// @Summary get User by ID
-// @Tags getUserById
+// Get User by parameters
+// @Summary get User by parameters
+// @Tags getUserByParameters
 // @Accept			json
 // @Produce		json
 // @Param id query string false "string valid"
-// @Success 200 {string} string "Get user by id"
+// @Param name query string false "string valid"
+// @Success 200 {string} string "Get user by parameters"
 // @Failure 400 {string} string "Error"
 // @Router /user [get].
-func (h *Handler) GetUserByID() gin.HandlerFunc {
+func (h *Handler) GetUserByParameter() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var params []service.ParamUser
 		idStr := c.DefaultQuery("id", "")
-		id, err := strconv.Atoi(idStr)
-		if err != nil {
-			fmt.Println("Error convert string to int")
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid note id",
-			})
-			return
+		if idStr != "" {
+			param := service.ParamUser{}
+			param.Param = "id"
+			param.Value = idStr
+			params = append(params, param)
 		}
-
-		user, errGetUser := repository.Querier.UserByID(app.Repo, app.Ctx, id)
-		if errGetUser != nil {
-			msg := fmt.Sprintf("Don't found data for id=%d", id)
+		name := c.DefaultQuery("name", "")
+		if name != "" {
+			param := service.ParamUser{}
+			param.Param = "name"
+			param.Value = name
+			params = append(params, param)
+		}
+		user, err := service.GetUserByParam(app.Ctx, app.Repo, params)
+		if err != nil {
+			msg := fmt.Sprintf("Error get user by parameters: %s", err)
 			c.JSON(http.StatusNotAcceptable, gin.H{
 				"message": msg,
 			})
@@ -67,8 +73,8 @@ func (h *Handler) GetUserByID() gin.HandlerFunc {
 // @Tags addUser
 // @Accept			json
 // @Produce		json
-// @Param input body models.AddUser true "Модель которую принимает метод"
-// @Success 200 {string} string "Get user by id"
+// @Param input body repository.UserAddParams true "Модель которую принимает метод"
+// @Success 200 {string} string "Added user"
 // @Failure 400 {string} string "Error"
 // @Router /add_user [post].
 func (h *Handler) AddUser() gin.HandlerFunc {

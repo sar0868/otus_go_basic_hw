@@ -1,14 +1,14 @@
 definitions:
-  models.AddUser:
+  repository.UserAddParams:
     properties:
-      address:
+      email:
         type: string
-      age:
-        type: integer
       name:
         type: string
+      password:
+        type: string
     type: object
-host: 127.0.0.1:8080/
+host: 0.0.0.0:8080/
 info:
   contact: {}
   description: API Server
@@ -25,12 +25,12 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/models.AddUser'
+          $ref: '#/definitions/repository.UserAddParams'
       produces:
       - application/json
       responses:
         "200":
-          description: Get user by id
+          description: Added user
           schema:
             type: string
         "400":
@@ -49,20 +49,24 @@ paths:
         in: query
         name: id
         type: string
+      - description: string valid
+        in: query
+        name: name
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: Get user by id
+          description: Get user by parameters
           schema:
             type: string
         "400":
           description: Error
           schema:
             type: string
-      summary: get User by ID
+      summary: get User by parameters
       tags:
-      - getUserById
+      - getUserByParameters
   /users:
     get:
       consumes:

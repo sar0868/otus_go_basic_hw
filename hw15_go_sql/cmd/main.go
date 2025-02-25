@@ -16,7 +16,7 @@ import (
 // @version 1
 // @description API Server
 
-// @host 127.0.0.1:8080/
+// @host 0.0.0.0:8080/
 
 func main() {
 	conf := app.Init()

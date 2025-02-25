@@ -6,7 +6,7 @@
         "contact": {},
         "version": "1"
     },
-    "host": "127.0.0.1:8080/",
+    "host": "0.0.0.0:8080/",
     "paths": {
         "/add_user": {
             "post": {
@@ -27,13 +27,13 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.AddUser"
+                            "$ref": "#/definitions/repository.UserAddParams"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Get user by id",
+                        "description": "Added user",
                         "schema": {
                             "type": "string"
                         }
@@ -56,20 +56,26 @@
                     "application/json"
                 ],
                 "tags": [
-                    "getUserById"
+                    "getUserByParameters"
                 ],
-                "summary": "get User by ID",
+                "summary": "get User by parameters",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "string valid",
                         "name": "id",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "string valid",
+                        "name": "name",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Get user by id",
+                        "description": "Get user by parameters",
                         "schema": {
                             "type": "string"
                         }
@@ -113,16 +119,16 @@
         }
     },
     "definitions": {
-        "models.AddUser": {
+        "repository.UserAddParams": {
             "type": "object",
             "properties": {
-                "address": {
+                "email": {
                     "type": "string"
                 },
-                "age": {
-                    "type": "integer"
-                },
                 "name": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }
