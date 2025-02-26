@@ -1,7 +1,25 @@
 definitions:
-  repository.ProductCreateParams:
+  handler.ProductCreateParams:
+    properties:
+      name:
+        type: string
+      price:
+        type: number
     type: object
-  repository.ProductUpdateParams:
+  handler.ProductGetRangePriceParams:
+    properties:
+      price:
+        type: number
+      price_2:
+        description: 'nolint: tagliatelle'
+        type: number
+    type: object
+  handler.ProductUpdateParams:
+    properties:
+      name:
+        type: string
+      price:
+        type: number
     type: object
   repository.UserAddParams:
     properties:
@@ -36,7 +54,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/repository.ProductCreateParams'
+          $ref: '#/definitions/handler.ProductCreateParams'
       produces:
       - application/json
       responses:
@@ -134,7 +152,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/repository.ProductUpdateParams'
+          $ref: '#/definitions/handler.ProductUpdateParams'
       produces:
       - application/json
       responses:
@@ -215,6 +233,31 @@ paths:
       summary: get products
       tags:
       - getProducts
+  /products_prices:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ProductGetRangePriceParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: get products
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get Products for range
+      tags:
+      - getProductsForEange
   /user:
     get:
       consumes:

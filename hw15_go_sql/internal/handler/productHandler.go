@@ -10,6 +10,21 @@ import (
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/service"
 )
 
+type ProductUpdateParams struct {
+	Price float64 `db:"price" json:"price"`
+	Name  string  `db:"name" json:"name"`
+}
+
+type ProductCreateParams struct {
+	Name  string  `db:"name" json:"name"`
+	Price float64 `db:"price" json:"price"`
+}
+
+type ProductGetRangePriceParams struct {
+	Price  float64 `db:"price" json:"price"`
+	Price2 float64 `json:"price_2"` //nolint: tagliatelle
+}
+
 // Get Products
 // @Summary get products
 // @Tags getProducts
@@ -41,7 +56,7 @@ func (h *Handler) GetProducts() gin.HandlerFunc {
 func (h *Handler) GetProductByName() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		name := c.DefaultQuery("name", "")
-		product, err := service.GetProductsByName(app.Ctx, app.Repo, name)
+		product, err := service.ProductByName(app.Ctx, app.Repo, name)
 		if err != nil {
 			msg := fmt.Sprintf("Error get product by name: %s", err)
 			c.JSON(http.StatusNotAcceptable, gin.H{
@@ -58,7 +73,7 @@ func (h *Handler) GetProductByName() gin.HandlerFunc {
 // @Tags addProduct
 // @Accept			json
 // @Produce		json
-// @Param input body repository.ProductCreateParams true "Модель которую принимает метод"
+// @Param input body ProductCreateParams true "Модель которую принимает метод"
 // @Success 200 {string} string "Added product"
 // @Failure 400 {string} string "Error"
 // @Router /add_product [post].
@@ -87,7 +102,7 @@ func (h *Handler) ProductCreate() gin.HandlerFunc {
 // @Tags updateProductPrice
 // @Accept			json
 // @Produce		json
-// @Param input body repository.ProductUpdateParams true "Модель которую принимает метод"
+// @Param input body ProductUpdateParams true "Модель которую принимает метод"
 // @Success 200 {string} string "Update product"
 // @Failure 400 {string} string "Error"
 // @Router /edit_product [post].
@@ -135,5 +150,34 @@ func (h *Handler) ProductDelete() gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{
 			"message": msg,
 		})
+	}
+}
+
+// Get Products for range
+// @Summary get Products for range
+// @Tags getProductsForEange
+// @Accept			json
+// @Produce		json
+// @Param input body ProductGetRangePriceParams true "Модель которую принимает метод"
+// @Success 200 {string} string "get products"
+// @Failure 400 {string} string "Error"
+// @Router /products_prices [post].
+func (h *Handler) ProductsGetRangePrice() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var paramsPrice repository.ProductGetRangePriceParams
+		if err := c.ShouldBindJSON(&paramsPrice); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": "Invalid request",
+			})
+			return
+		}
+		products, err := service.ProductsGetRangePrice(app.Ctx, app.Repo, paramsPrice)
+		if err != nil {
+			c.JSON(http.StatusNotAcceptable, gin.H{
+				"error": fmt.Sprintf("Error get products: %v", err),
+			})
+			return
+		}
+		c.JSON(http.StatusOK, products)
 	}
 }

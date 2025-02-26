@@ -20,5 +20,6 @@ func InitHandler(api *gin.Engine, h *Handler) {
 	api.GET("/product", h.GetProductByName())
 	api.POST("/add_product", h.ProductCreate())
 	api.POST("/edit_product", h.ProductUpdate())
+	api.POST("/products_prices", h.ProductsGetRangePrice())
 	api.DELETE("/del_product", h.ProductDelete())
 }

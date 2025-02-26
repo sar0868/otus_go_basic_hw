@@ -7,11 +7,6 @@ import (
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/repository"
 )
 
-type ParamProduct struct {
-	Param string
-	Value string
-}
-
 func Products(ctx context.Context, repo repository.Querier) ([]*repository.ShopProduct, error) {
 	products, err := repo.Products(ctx)
 	if err != nil {
@@ -20,7 +15,7 @@ func Products(ctx context.Context, repo repository.Querier) ([]*repository.ShopP
 	return products, nil
 }
 
-func GetProductsByName(ctx context.Context, repo repository.Querier, name string) (*repository.ShopProduct, error) {
+func ProductByName(ctx context.Context, repo repository.Querier, name string) (*repository.ShopProduct, error) {
 	product, err := repo.ProductGetByName(ctx, name)
 	if err != nil {
 		return nil, fmt.Errorf("don't found product for name=%s", name)
@@ -41,7 +36,7 @@ func ProductUpdate(ctx context.Context, repo repository.Querier, newProduct repo
 	if err := repo.ProductUpdate(ctx, newProduct); err != nil {
 		return nil, err
 	}
-	product, err := GetProductsByName(ctx, repo, newProduct.Name)
+	product, err := ProductByName(ctx, repo, newProduct.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -54,4 +49,20 @@ func DeleteProduct(ctx context.Context, repo repository.Querier, name string) er
 		return fmt.Errorf("error delete product: %w", err)
 	}
 	return nil
+}
+
+func ProductByID(ctx context.Context, repo repository.Querier, id int) (*repository.ShopProduct, error) {
+	product, err := repo.ProductGetById(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("don't found product by id=%d", id)
+	}
+	return product, nil
+}
+
+func ProductsGetRangePrice(ctx context.Context, repo repository.Querier, paramsPrice repository.ProductGetRangePriceParams) ([]*repository.ShopProduct, error) { //nolint: lll
+	products, err := repo.ProductGetRangePrice(ctx, paramsPrice)
+	if err != nil {
+		return nil, err
+	}
+	return products, nil
 }

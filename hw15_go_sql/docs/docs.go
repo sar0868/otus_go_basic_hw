@@ -34,7 +34,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/repository.ProductCreateParams"
+                            "$ref": "#/definitions/handler.ProductCreateParams"
                         }
                     }
                 ],
@@ -186,7 +186,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/repository.ProductUpdateParams"
+                            "$ref": "#/definitions/handler.ProductUpdateParams"
                         }
                     }
                 ],
@@ -309,6 +309,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/products_prices": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "getProductsForEange"
+                ],
+                "summary": "get Products for range",
+                "parameters": [
+                    {
+                        "description": "Модель которую принимает метод",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.ProductGetRangePriceParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "get products",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "get": {
                 "consumes": [
@@ -381,11 +420,39 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "repository.ProductCreateParams": {
-            "type": "object"
+        "handler.ProductCreateParams": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                }
+            }
         },
-        "repository.ProductUpdateParams": {
-            "type": "object"
+        "handler.ProductGetRangePriceParams": {
+            "type": "object",
+            "properties": {
+                "price": {
+                    "type": "number"
+                },
+                "price_2": {
+                    "description": "nolint: tagliatelle",
+                    "type": "number"
+                }
+            }
+        },
+        "handler.ProductUpdateParams": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                }
+            }
         },
         "repository.UserAddParams": {
             "type": "object",
