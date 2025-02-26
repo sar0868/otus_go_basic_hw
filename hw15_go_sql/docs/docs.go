@@ -245,6 +245,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/orders": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "getOrders"
+                ],
+                "summary": "get orders",
+                "responses": {
+                    "200": {
+                        "description": "Get orders",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/product": {
             "get": {
                 "consumes": [

@@ -1,6 +1,6 @@
--- name: OrdersCreate :execresult
+-- name: OrdersCreate :one
 insert into shop.Orders(user_id)
-values ($1);
+values ($1) returning id;
 
 -- name: OrderUpdate :exec
 update shop.orders ord
@@ -31,4 +31,6 @@ set total_amount=(
 where ord.id = $1;
 
 -- name: Orders :many
-select  * from shop.orders o ;
+select  o.id, u.name, o.order_date, o.total_amount from shop.orders o 
+inner join shop.users u on o.user_id = u.id
+order by o.id, u.name;

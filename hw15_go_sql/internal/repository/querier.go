@@ -18,7 +18,7 @@ type Querier interface {
 	OrderProductsCreate(ctx context.Context, arg OrderProductsCreateParams) (pgconn.CommandTag, error)
 	OrderUpdate(ctx context.Context, orderID int32) error
 	OrderUpdateTotalAmountByOrderID(ctx context.Context, orderID int32) error
-	Orders(ctx context.Context) ([]*ShopOrder, error)
+	Orders(ctx context.Context) ([]*OrdersRow, error)
 	OrdersCreate(ctx context.Context, userID *int32) (pgconn.CommandTag, error)
 	OrdersProducts(ctx context.Context) ([]*ShopOrderproduct, error)
 	ProductCreate(ctx context.Context, arg ProductCreateParams) (int, error)

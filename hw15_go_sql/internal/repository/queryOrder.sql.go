@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const OrderCreateByUser = `-- name: OrderCreateByUser :exec
@@ -64,21 +65,30 @@ func (q *Queries) OrderUpdateTotalAmountByOrderID(ctx context.Context, orderID i
 }
 
 const Orders = `-- name: Orders :many
-select  id, user_id, order_date, total_amount from shop.orders o
+select  o.id, u.name, o.order_date, o.total_amount from shop.orders o 
+inner join shop.users u on o.user_id = u.id
+order by o.id, u.name
 `
 
-func (q *Queries) Orders(ctx context.Context) ([]*ShopOrder, error) {
+type OrdersRow struct {
+	ID          int                `db:"id" json:"id"`
+	Name        string             `db:"name" json:"name"`
+	OrderDate   pgtype.Timestamptz `db:"order_date" json:"order_date"`
+	TotalAmount pgtype.Numeric     `db:"total_amount" json:"total_amount"`
+}
+
+func (q *Queries) Orders(ctx context.Context) ([]*OrdersRow, error) {
 	rows, err := q.db.Query(ctx, Orders)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []*ShopOrder{}
+	items := []*OrdersRow{}
 	for rows.Next() {
-		var i ShopOrder
+		var i OrdersRow
 		if err := rows.Scan(
 			&i.ID,
-			&i.UserID,
+			&i.Name,
 			&i.OrderDate,
 			&i.TotalAmount,
 		); err != nil {

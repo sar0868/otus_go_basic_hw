@@ -192,6 +192,24 @@ paths:
       summary: updateUser
       tags:
       - updateUser
+  /orders:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get orders
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get orders
+      tags:
+      - getOrders
   /product:
     get:
       consumes:
