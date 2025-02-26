@@ -228,3 +228,11 @@ create index if not exists ix_orders_order_date on shop.Orders (order_date);
 create index if not exists ix_product_id on shop.Products (id);
 create index if not exists ix_product_name on shop.Products (name);
 create index if not exists ix_orders_product on shop.OrderProducts(order_id, product_id);
+
+
+
+-- создание заказа (пользователь выбирает продукт и создает заказ):
+-- - по имени пользователя создаю order
+-- - добавляю продукт в заказ (создать orderProducts по имени продукта )
+-- - заказ пересчитывается -> возвращается номер заказа id
+-- добавляет продукты в заказ по id (заказ пересчитывается)

@@ -8,18 +8,20 @@ package repository
 import (
 	"context"
 
-	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const OrderCreateByUser = `-- name: OrderCreateByUser :exec
+const OrderCreateByUser = `-- name: OrderCreateByUser :one
 insert into shop.Orders (user_id)
 values ((select id from shop.Users where name = $1))
+returning id
 `
 
-func (q *Queries) OrderCreateByUser(ctx context.Context, name string) error {
-	_, err := q.db.Exec(ctx, OrderCreateByUser, name)
-	return err
+func (q *Queries) OrderCreateByUser(ctx context.Context, name string) (int, error) {
+	row := q.db.QueryRow(ctx, OrderCreateByUser, name)
+	var id int
+	err := row.Scan(&id)
+	return id, err
 }
 
 const OrderDelete = `-- name: OrderDelete :exec
@@ -102,11 +104,14 @@ func (q *Queries) Orders(ctx context.Context) ([]*OrdersRow, error) {
 	return items, nil
 }
 
-const OrdersCreate = `-- name: OrdersCreate :execresult
+const OrdersCreate = `-- name: OrdersCreate :one
 insert into shop.Orders(user_id)
-values ($1)
+values ($1) returning id
 `
 
-func (q *Queries) OrdersCreate(ctx context.Context, userID *int32) (pgconn.CommandTag, error) {
-	return q.db.Exec(ctx, OrdersCreate, userID)
+func (q *Queries) OrdersCreate(ctx context.Context, userID *int32) (int, error) {
+	row := q.db.QueryRow(ctx, OrdersCreate, userID)
+	var id int
+	err := row.Scan(&id)
+	return id, err
 }

@@ -12,29 +12,6 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const OrderProductCreateByUserAndProductQuanti = `-- name: OrderProductCreateByUserAndProductQuanti :exec
-insert into shop.Orderproducts 
-(order_id, product_id, quantity)
-values 
-(
-    (select id from shop.orders 
-    where user_id = (select id from shop.Users u where u.name = $1)),
-    (select id from shop.products p where p.name = $2),
-    $3
-)
-`
-
-type OrderProductCreateByUserAndProductQuantiParams struct {
-	Name     string         `db:"name" json:"name"`
-	Name_2   string         `db:"name_2" json:"name_2"`
-	Quantity pgtype.Numeric `db:"quantity" json:"quantity"`
-}
-
-func (q *Queries) OrderProductCreateByUserAndProductQuanti(ctx context.Context, arg OrderProductCreateByUserAndProductQuantiParams) error {
-	_, err := q.db.Exec(ctx, OrderProductCreateByUserAndProductQuanti, arg.Name, arg.Name_2, arg.Quantity)
-	return err
-}
-
 const OrderProductsCreate = `-- name: OrderProductsCreate :execresult
 insert into shop.orderproducts 
 (order_id, product_id, quantity)
@@ -73,4 +50,26 @@ func (q *Queries) OrdersProducts(ctx context.Context) ([]*ShopOrderproduct, erro
 		return nil, err
 	}
 	return items, nil
+}
+
+const ProductAddOrder = `-- name: ProductAddOrder :exec
+insert into shop.Orderproducts 
+(order_id, product_id, quantity)
+values 
+( 
+    $1, 
+    (select id from shop.products p where p.name = $2),
+    $3
+)
+`
+
+type ProductAddOrderParams struct {
+	OrderID  int32          `db:"order_id" json:"order_id"`
+	Name     string         `db:"name" json:"name"`
+	Quantity pgtype.Numeric `db:"quantity" json:"quantity"`
+}
+
+func (q *Queries) ProductAddOrder(ctx context.Context, arg ProductAddOrderParams) error {
+	_, err := q.db.Exec(ctx, ProductAddOrder, arg.OrderID, arg.Name, arg.Quantity)
+	return err
 }

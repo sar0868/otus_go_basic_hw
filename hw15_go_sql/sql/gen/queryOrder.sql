@@ -16,9 +16,10 @@ where ord.id  = $1;
 delete from shop.orders 
 where id=$1;
 
--- name: OrderCreateByUser :exec
+-- name: OrderCreateByUser :one
 insert into shop.Orders (user_id)
-values ((select id from shop.Users where name = $1));
+values ((select id from shop.Users where name = $1))
+returning id;
 
 -- name: OrderUpdateTotalAmountByOrderID :exec
 update shop.orders ord
