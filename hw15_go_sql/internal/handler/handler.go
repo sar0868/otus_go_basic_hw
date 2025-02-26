@@ -14,5 +14,11 @@ func InitHandler(api *gin.Engine, h *Handler) {
 	api.GET("/users", h.GetUsers())
 	api.GET("/user", h.GetUserByParameter())
 	api.POST("/add_user", h.AddUser())
+	api.POST("/edit_user", h.UpdateUser())
 	api.DELETE("/del_user", h.DeleteUser())
+	api.GET("/products", h.GetProducts())
+	api.GET("/product", h.GetProductByName())
+	api.POST("/add_product", h.ProductCreate())
+	api.POST("/edit_product", h.ProductUpdate())
+	api.DELETE("/del_product", h.ProductDelete())
 }

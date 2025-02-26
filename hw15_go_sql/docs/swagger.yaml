@@ -1,4 +1,8 @@
 definitions:
+  repository.ProductCreateParams:
+    type: object
+  repository.ProductUpdateParams:
+    type: object
   repository.UserAddParams:
     properties:
       email:
@@ -8,6 +12,13 @@ definitions:
       password:
         type: string
     type: object
+  repository.UserUpdateParams:
+    properties:
+      name:
+        type: string
+      name_2:
+        type: string
+    type: object
 host: 0.0.0.0:8080/
 info:
   contact: {}
@@ -15,6 +26,31 @@ info:
   title: 'HW15: shop'
   version: "1"
 paths:
+  /add_product:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/repository.ProductCreateParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Added product
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: addProduct
+      tags:
+      - addProduct
   /add_user:
     post:
       consumes:
@@ -40,6 +76,30 @@ paths:
       summary: addUser
       tags:
       - addUser
+  /del_product:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: string valid
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Delete product
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: delete product
+      tags:
+      - deleteProduct
   /del_user:
     delete:
       consumes:
@@ -64,6 +124,97 @@ paths:
       summary: delete User by name
       tags:
       - deleteUserByName
+  /edit_product:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/repository.ProductUpdateParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update product
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: update product price
+      tags:
+      - updateProductPrice
+  /edit_user:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/repository.UserUpdateParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update user name
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: updateUser
+      tags:
+      - updateUser
+  /product:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: string valid
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get product by name
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get Product by name
+      tags:
+      - getProductByName
+  /products:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get products
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get products
+      tags:
+      - getProducts
   /user:
     get:
       consumes:

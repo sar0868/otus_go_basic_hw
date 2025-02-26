@@ -107,8 +107,8 @@ func (q *Queries) UserGetByName(ctx context.Context, name string) (*ShopUser, er
 
 const UserUpdate = `-- name: UserUpdate :exec
 update shop.users 
-set name = $1
-where "name" = $2
+set name = $2
+where "name" = $1
 `
 
 type UserUpdateParams struct {

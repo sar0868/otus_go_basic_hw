@@ -77,19 +77,19 @@ func GetUserByID(ctx context.Context, repo repository.Querier, id int) (*reposit
 func GetUserByName(ctx context.Context, repo repository.Querier, name string) (*repository.ShopUser, error) {
 	user, err := repo.UserGetByName(ctx, name)
 	if err != nil {
-		return nil, fmt.Errorf("don't found user for username= %v: %w", name, err)
+		return nil, fmt.Errorf("don't found user for username= %v", name)
 	}
 	return user, nil
 }
 
-func UserUpdate(ctx context.Context, repo repository.Querier, name string, newName string) error {
-	userUpdateParams := repository.UserUpdateParams{
-		Name:   name,
-		Name_2: newName,
-	}
-	err := repo.UserUpdate(ctx, userUpdateParams)
+func UserUpdate(ctx context.Context, repo repository.Querier, updateUser repository.UserUpdateParams) (*repository.ShopUser, error) { //nolint: lll
+	err := repo.UserUpdate(ctx, updateUser)
 	if err != nil {
-		return fmt.Errorf("don't change name: %w", err)
+		return nil, err
 	}
-	return nil
+	user, errUpdateName := GetUserByName(ctx, repo, updateUser.Name_2)
+	if errUpdateName != nil {
+		return nil, errUpdateName
+	}
+	return user, nil
 }

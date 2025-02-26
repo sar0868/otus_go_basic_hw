@@ -5,8 +5,8 @@ values ($1, $2, $3) returning id;
 
 -- name: UserUpdate :exec
 update shop.users 
-set name = $1
-where "name" = $2;
+set name = $2
+where "name" = $1;
 
 -- name: UserDelete :exec
 DELETE from shop.Users

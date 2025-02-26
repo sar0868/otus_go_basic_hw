@@ -28,12 +28,23 @@ func GetProductsByName(ctx context.Context, repo repository.Querier, name string
 	return product, nil
 }
 
-func AddProduct(ctx context.Context, repo repository.Querier, newProduct repository.ProductCreateParams) (*repository.ShopProduct, error) { //nolint: lll
+func ProductCreate(ctx context.Context, repo repository.Querier, newProduct repository.ProductCreateParams) (*repository.ShopProduct, error) { //nolint: lll
 	id, err := repo.ProductCreate(ctx, newProduct)
 	if err != nil {
 		return nil, fmt.Errorf("don't create product: %w", err)
 	}
 	product, _ := repo.ProductGetById(ctx, id)
+	return product, nil
+}
+
+func ProductUpdate(ctx context.Context, repo repository.Querier, newProduct repository.ProductUpdateParams) (*repository.ShopProduct, error) { //nolint: lll
+	if err := repo.ProductUpdate(ctx, newProduct); err != nil {
+		return nil, err
+	}
+	product, err := GetProductsByName(ctx, repo, newProduct.Name)
+	if err != nil {
+		return nil, err
+	}
 	return product, nil
 }
 

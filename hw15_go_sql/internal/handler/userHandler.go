@@ -123,3 +123,32 @@ func (h *Handler) DeleteUser() gin.HandlerFunc {
 		})
 	}
 }
+
+// Update User name
+// @Summary updateUser
+// @Tags updateUser
+// @Accept			json
+// @Produce		json
+// @Param input body repository.UserUpdateParams true "Модель которую принимает метод"
+// @Success 200 {string} string "Update user name"
+// @Failure 400 {string} string "Error"
+// @Router /edit_user [post].
+func (h *Handler) UpdateUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var updateUser repository.UserUpdateParams
+		if err := c.ShouldBindJSON(&updateUser); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": "Invalid request",
+			})
+			return
+		}
+		user, err := service.UserUpdate(app.Ctx, app.Repo, updateUser)
+		if err != nil {
+			c.JSON(http.StatusNotAcceptable, gin.H{
+				"error": fmt.Sprintf("Error update user: %v", err),
+			})
+			return
+		}
+		c.JSON(http.StatusOK, user)
+	}
+}
