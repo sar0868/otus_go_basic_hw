@@ -50,7 +50,7 @@ func (q *Queries) OrderUpdate(ctx context.Context, orderID int32) error {
 	return err
 }
 
-const OrderUpdateTotalAmountByOrderID = `-- name: OrderUpdateTotalAmountByOrderID :exec
+const OrderUpdateTotal = `-- name: OrderUpdateTotal :exec
 update shop.orders ord
 set total_amount=(
 	select sum(p.price * op.quantity) from 
@@ -61,9 +61,34 @@ set total_amount=(
 where ord.id = $1
 `
 
-func (q *Queries) OrderUpdateTotalAmountByOrderID(ctx context.Context, orderID int32) error {
-	_, err := q.db.Exec(ctx, OrderUpdateTotalAmountByOrderID, orderID)
+func (q *Queries) OrderUpdateTotal(ctx context.Context, orderID int32) error {
+	_, err := q.db.Exec(ctx, OrderUpdateTotal, orderID)
 	return err
+}
+
+const OrderUser = `-- name: OrderUser :one
+select  o.id, u.name, o.order_date, o.total_amount from shop.orders o 
+inner join shop.users u on o.user_id = u.id
+where o.id = $1
+`
+
+type OrderUserRow struct {
+	ID          int                `db:"id" json:"id"`
+	Name        string             `db:"name" json:"name"`
+	OrderDate   pgtype.Timestamptz `db:"order_date" json:"order_date"`
+	TotalAmount pgtype.Numeric     `db:"total_amount" json:"total_amount"`
+}
+
+func (q *Queries) OrderUser(ctx context.Context, id int) (*OrderUserRow, error) {
+	row := q.db.QueryRow(ctx, OrderUser, id)
+	var i OrderUserRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.OrderDate,
+		&i.TotalAmount,
+	)
+	return &i, err
 }
 
 const Orders = `-- name: Orders :many

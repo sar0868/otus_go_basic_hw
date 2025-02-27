@@ -25,7 +25,7 @@ select u.name as "user", o.id as order_id, o.total_amount from shop.orders o
 inner join shop.users u on o.user_id = u.id 
 where u.name like $1;
 
--- name: UsersSumTotalOrdersAvrPrice :many
+-- name: UsersStatistic :many
 select u.name as "user", sum(o.total_amount) as total_orders, avg(p.price) as "avr price" 
 from shop.orders o  
 inner join shop.orderproducts op on o.id = op.order_id 

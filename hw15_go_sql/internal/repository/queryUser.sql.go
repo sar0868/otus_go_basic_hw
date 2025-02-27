@@ -150,7 +150,7 @@ func (q *Queries) Users(ctx context.Context) ([]*ShopUser, error) {
 	return items, nil
 }
 
-const UsersSumTotalOrdersAvrPrice = `-- name: UsersSumTotalOrdersAvrPrice :many
+const UsersStatistic = `-- name: UsersStatistic :many
 select u.name as "user", sum(o.total_amount) as total_orders, avg(p.price) as "avr price" 
 from shop.orders o  
 inner join shop.orderproducts op on o.id = op.order_id 
@@ -159,21 +159,21 @@ right join shop.Users u on o.user_id = u.id
 group by u.name
 `
 
-type UsersSumTotalOrdersAvrPriceRow struct {
+type UsersStatisticRow struct {
 	User        string  `db:"user" json:"user"`
 	TotalOrders int64   `db:"total_orders" json:"total_orders"`
 	AvrPrice    float64 `db:"avr price" json:"avr price"`
 }
 
-func (q *Queries) UsersSumTotalOrdersAvrPrice(ctx context.Context) ([]*UsersSumTotalOrdersAvrPriceRow, error) {
-	rows, err := q.db.Query(ctx, UsersSumTotalOrdersAvrPrice)
+func (q *Queries) UsersStatistic(ctx context.Context) ([]*UsersStatisticRow, error) {
+	rows, err := q.db.Query(ctx, UsersStatistic)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []*UsersSumTotalOrdersAvrPriceRow{}
+	items := []*UsersStatisticRow{}
 	for rows.Next() {
-		var i UsersSumTotalOrdersAvrPriceRow
+		var i UsersStatisticRow
 		if err := rows.Scan(&i.User, &i.TotalOrders, &i.AvrPrice); err != nil {
 			return nil, err
 		}

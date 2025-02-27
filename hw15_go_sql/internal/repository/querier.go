@@ -16,7 +16,8 @@ type Querier interface {
 	OrderDelete(ctx context.Context, id int) error
 	OrderProductsCreate(ctx context.Context, arg OrderProductsCreateParams) (pgconn.CommandTag, error)
 	OrderUpdate(ctx context.Context, orderID int32) error
-	OrderUpdateTotalAmountByOrderID(ctx context.Context, orderID int32) error
+	OrderUpdateTotal(ctx context.Context, orderID int32) error
+	OrderUser(ctx context.Context, id int) (*OrderUserRow, error)
 	Orders(ctx context.Context) ([]*OrdersRow, error)
 	OrdersCreate(ctx context.Context, userID *int32) (int, error)
 	OrdersProducts(ctx context.Context) ([]*ShopOrderproduct, error)
@@ -34,7 +35,7 @@ type Querier interface {
 	UserGetByName(ctx context.Context, name string) (*ShopUser, error)
 	UserUpdate(ctx context.Context, arg UserUpdateParams) error
 	Users(ctx context.Context) ([]*ShopUser, error)
-	UsersSumTotalOrdersAvrPrice(ctx context.Context) ([]*UsersSumTotalOrdersAvrPriceRow, error)
+	UsersStatistic(ctx context.Context) ([]*UsersStatisticRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

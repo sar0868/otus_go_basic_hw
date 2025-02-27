@@ -37,6 +37,22 @@ definitions:
       name_2:
         type: string
     type: object
+  trx.CreateOrderParams:
+    properties:
+      products:
+        items:
+          $ref: '#/definitions/trx.Product'
+        type: array
+      user:
+        type: string
+    type: object
+  trx.Product:
+    properties:
+      name:
+        type: string
+      quantity:
+        type: number
+    type: object
 host: 0.0.0.0:8080/
 info:
   contact: {}
@@ -94,6 +110,31 @@ paths:
       summary: addUser
       tags:
       - addUser
+  /create_order:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/trx.CreateOrderParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: create order
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: Order Create
+      tags:
+      - OrderCreate
   /del_product:
     delete:
       consumes:

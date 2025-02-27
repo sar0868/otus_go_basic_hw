@@ -21,7 +21,7 @@ insert into shop.Orders (user_id)
 values ((select id from shop.Users where name = $1))
 returning id;
 
--- name: OrderUpdateTotalAmountByOrderID :exec
+-- name: OrderUpdateTotal :exec
 update shop.orders ord
 set total_amount=(
 	select sum(p.price * op.quantity) from 
@@ -35,3 +35,8 @@ where ord.id = $1;
 select  o.id, u.name, o.order_date, o.total_amount from shop.orders o 
 inner join shop.users u on o.user_id = u.id
 order by o.id, u.name;
+
+-- name: OrderUser :one
+select  o.id, u.name, o.order_date, o.total_amount from shop.orders o 
+inner join shop.users u on o.user_id = u.id
+where o.id = $1;

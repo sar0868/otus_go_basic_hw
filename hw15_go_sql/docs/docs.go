@@ -93,6 +93,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/create_order": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "OrderCreate"
+                ],
+                "summary": "Order Create",
+                "parameters": [
+                    {
+                        "description": "Модель которую принимает метод",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/trx.CreateOrderParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "create order",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/del_product": {
             "delete": {
                 "consumes": [
@@ -504,6 +543,31 @@ const docTemplate = `{
                 },
                 "name_2": {
                     "type": "string"
+                }
+            }
+        },
+        "trx.CreateOrderParams": {
+            "type": "object",
+            "properties": {
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/trx.Product"
+                    }
+                },
+                "user": {
+                    "type": "string"
+                }
+            }
+        },
+        "trx.Product": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "number"
                 }
             }
         }

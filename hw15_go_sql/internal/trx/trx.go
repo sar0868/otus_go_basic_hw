@@ -9,12 +9,12 @@ import (
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/repository"
 )
 
-func CreateOrderWithProducts(ctx context.Context, params CreateOrderParams, db *pgxpool.Pool) (int, error) {
+func CreateOrderWithProducts(ctx context.Context, params CreateOrderParams, db *pgxpool.Pool) (*repository.OrderUserRow, error) { //nolint: lll
 	var orderID int
 
 	tx, err := db.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.ReadCommitted})
 	if err != nil {
-		return orderID, err
+		return nil, err
 	}
 	defer tx.Rollback(ctx)
 
@@ -23,7 +23,7 @@ func CreateOrderWithProducts(ctx context.Context, params CreateOrderParams, db *
 
 	orderID, err = repo.OrderCreateByUser(ctx, params.User)
 	if err != nil {
-		return orderID, err
+		return nil, err
 	}
 	for product := range params.Products {
 		var quant pgtype.Numeric
@@ -35,11 +35,20 @@ func CreateOrderWithProducts(ctx context.Context, params CreateOrderParams, db *
 		}
 		errAddProduct := repo.ProductAddOrder(ctx, paramProduct)
 		if errAddProduct != nil {
-			return orderID, errAddProduct
+			return nil, errAddProduct
+		}
+		errOrdUp := repo.OrderUpdateTotal(ctx, int32(orderID)) //nolint: gosec
+		if errOrdUp != nil {
+			return nil, errOrdUp
 		}
 	}
-	if errCommit := tx.Commit(ctx); errCommit != nil {
-		return orderID, errCommit
+	order, errOrder := repo.OrderUser(ctx, orderID)
+	if errOrder != nil {
+		return nil, errOrder
 	}
-	return orderID, nil
+
+	if errCommit := tx.Commit(ctx); errCommit != nil {
+		return nil, errCommit
+	}
+	return order, nil
 }
