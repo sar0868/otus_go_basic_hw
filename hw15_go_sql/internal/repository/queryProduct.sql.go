@@ -93,6 +93,18 @@ func (q *Queries) ProductGetRangePrice(ctx context.Context, arg ProductGetRangeP
 	return items, nil
 }
 
+const ProductID = `-- name: ProductID :one
+select id from shop.products p
+where p.name = $1
+`
+
+func (q *Queries) ProductID(ctx context.Context, name string) (int, error) {
+	row := q.db.QueryRow(ctx, ProductID, name)
+	var id int
+	err := row.Scan(&id)
+	return id, err
+}
+
 const ProductUpdate = `-- name: ProductUpdate :exec
 update shop.products
 set price = $1

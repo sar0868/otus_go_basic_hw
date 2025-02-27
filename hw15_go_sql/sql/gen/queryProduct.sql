@@ -28,3 +28,7 @@ where p.name = $1;
 -- name: ProductGetById :one
 select * from shop.products p 
 where p.id = $1;
+
+-- name: ProductID :one
+select id from shop.products p
+where p.name = $1;

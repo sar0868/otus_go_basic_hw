@@ -1,4 +1,4 @@
--- name: OrderProductsCreate :execresult
+-- name: OrderProductsCreate :exec
 insert into shop.orderproducts 
 (order_id, product_id, quantity)
 values ($1, $2, $3);

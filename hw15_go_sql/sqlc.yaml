@@ -22,3 +22,6 @@ sql:
           - go_type: "int"
             db_type: "serial"
             null: true
+          - go_type: "float64"
+            db_type: "numeric"
+            null: true

@@ -1,4 +1,13 @@
 definitions:
+  handler.CreateOrderParams:
+    properties:
+      product:
+        type: string
+      quantity:
+        type: number
+      user:
+        type: string
+    type: object
   handler.ProductCreateParams:
     properties:
       name:
@@ -36,22 +45,6 @@ definitions:
         type: string
       name_2:
         type: string
-    type: object
-  trx.CreateOrderParams:
-    properties:
-      products:
-        items:
-          $ref: '#/definitions/trx.Product'
-        type: array
-      user:
-        type: string
-    type: object
-  trx.Product:
-    properties:
-      name:
-        type: string
-      quantity:
-        type: number
     type: object
 host: 0.0.0.0:8080/
 info:
@@ -120,7 +113,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/trx.CreateOrderParams'
+          $ref: '#/definitions/handler.CreateOrderParams'
       produces:
       - application/json
       responses:

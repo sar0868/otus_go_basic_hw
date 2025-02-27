@@ -10,6 +10,12 @@ import (
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/trx"
 )
 
+type CreateOrderParams struct {
+	User     string  `db:"name" json:"user"`
+	Name     string  `db:"name" json:"product"`
+	Quantity float64 `db:"quantity" json:"quantity"`
+}
+
 // Get Orders
 // @Summary get orders
 // @Tags getOrders
@@ -33,7 +39,7 @@ func (h *Handler) GetOrders() gin.HandlerFunc {
 // @Tags OrderCreate
 // @Accept			json
 // @Produce		json
-// @Param input body trx.CreateOrderParams true "Модель которую принимает метод"
+// @Param input body CreateOrderParams true "Модель которую принимает метод"
 // @Success 200 {string} string "create order"
 // @Failure 400 {string} string "Error"
 // @Router /create_order [post].
@@ -46,7 +52,7 @@ func (h *Handler) CreateOrderWithProducts() gin.HandlerFunc {
 			})
 			return
 		}
-		order, err := trx.CreateOrderWithProducts(app.Ctx, products, &app.DB)
+		order, err := trx.CreateOrderWithProducts(app.Ctx, products, app.DB)
 		if err != nil {
 			c.JSON(http.StatusNotAcceptable, gin.H{
 				"error": fmt.Sprintf("Error create order: %v", err),

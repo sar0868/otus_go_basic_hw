@@ -16,7 +16,7 @@ import (
 var (
 	Ctx  context.Context
 	Repo repository.Querier
-	DB   pgxpool.Pool
+	DB   *pgxpool.Pool
 )
 
 func Init() *config.Cfg {
@@ -25,10 +25,11 @@ func Init() *config.Cfg {
 	if err != nil {
 		log.Panicln(err.Error())
 	}
-	DB, errDB := NewDB(Ctx, conf.DB)
+	db, errDB := NewDB(Ctx, conf.DB)
 	if errDB != nil {
 		log.Panicln(errDB.Error())
 	}
+	DB = db
 	log.Println("Connected to database")
 	Repo = repository.New(DB)
 	return conf

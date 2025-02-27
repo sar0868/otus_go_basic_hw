@@ -8,11 +8,10 @@ package repository
 import (
 	"context"
 
-	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const OrderProductsCreate = `-- name: OrderProductsCreate :execresult
+const OrderProductsCreate = `-- name: OrderProductsCreate :exec
 insert into shop.orderproducts 
 (order_id, product_id, quantity)
 values ($1, $2, $3)
@@ -24,8 +23,9 @@ type OrderProductsCreateParams struct {
 	Quantity  pgtype.Numeric `db:"quantity" json:"quantity"`
 }
 
-func (q *Queries) OrderProductsCreate(ctx context.Context, arg OrderProductsCreateParams) (pgconn.CommandTag, error) {
-	return q.db.Exec(ctx, OrderProductsCreate, arg.OrderID, arg.ProductID, arg.Quantity)
+func (q *Queries) OrderProductsCreate(ctx context.Context, arg OrderProductsCreateParams) error {
+	_, err := q.db.Exec(ctx, OrderProductsCreate, arg.OrderID, arg.ProductID, arg.Quantity)
+	return err
 }
 
 const OrdersProducts = `-- name: OrdersProducts :many

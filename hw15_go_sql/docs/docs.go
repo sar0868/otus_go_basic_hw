@@ -112,7 +112,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/trx.CreateOrderParams"
+                            "$ref": "#/definitions/handler.CreateOrderParams"
                         }
                     }
                 ],
@@ -487,6 +487,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "handler.CreateOrderParams": {
+            "type": "object",
+            "properties": {
+                "product": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "number"
+                },
+                "user": {
+                    "type": "string"
+                }
+            }
+        },
         "handler.ProductCreateParams": {
             "type": "object",
             "properties": {
@@ -543,31 +557,6 @@ const docTemplate = `{
                 },
                 "name_2": {
                     "type": "string"
-                }
-            }
-        },
-        "trx.CreateOrderParams": {
-            "type": "object",
-            "properties": {
-                "products": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/trx.Product"
-                    }
-                },
-                "user": {
-                    "type": "string"
-                }
-            }
-        },
-        "trx.Product": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "quantity": {
-                    "type": "number"
                 }
             }
         }

@@ -2,9 +2,9 @@
 -- +goose StatementBegin
 create table if not exists shop.Orders(
 	id serial primary key,
-	user_id integer references shop.Users(id) on delete cascade,
-	order_date timestamptz not null default now(),
-	total_amount numeric not null default 0
+	user_id integer references shop.Users(id)  on delete cascade not null,
+	order_date timestamptz default now(),
+	total_amount numeric default 0
 );
 -- +goose StatementEnd
 

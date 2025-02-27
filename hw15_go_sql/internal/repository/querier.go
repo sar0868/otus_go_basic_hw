@@ -6,15 +6,13 @@ package repository
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgconn"
 )
 
 type Querier interface {
 	GetUserOrdersByName(ctx context.Context, name string) ([]*GetUserOrdersByNameRow, error)
 	OrderCreateByUser(ctx context.Context, name string) (int, error)
 	OrderDelete(ctx context.Context, id int) error
-	OrderProductsCreate(ctx context.Context, arg OrderProductsCreateParams) (pgconn.CommandTag, error)
+	OrderProductsCreate(ctx context.Context, arg OrderProductsCreateParams) error
 	OrderUpdate(ctx context.Context, orderID int32) error
 	OrderUpdateTotal(ctx context.Context, orderID int32) error
 	OrderUser(ctx context.Context, id int) (*OrderUserRow, error)
@@ -27,6 +25,7 @@ type Querier interface {
 	ProductGetById(ctx context.Context, id int) (*ShopProduct, error)
 	ProductGetByName(ctx context.Context, name string) (*ShopProduct, error)
 	ProductGetRangePrice(ctx context.Context, arg ProductGetRangePriceParams) ([]*ShopProduct, error)
+	ProductID(ctx context.Context, name string) (int, error)
 	ProductUpdate(ctx context.Context, arg ProductUpdateParams) error
 	Products(ctx context.Context) ([]*ShopProduct, error)
 	UserAdd(ctx context.Context, arg UserAddParams) (int, error)
