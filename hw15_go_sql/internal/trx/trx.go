@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/repository"
 )
@@ -24,23 +23,23 @@ func CreateOrderWithProducts(ctx context.Context, params CreateOrderParams, db *
 
 	orderID, err = repo.OrderCreateByUser(ctx, params.User)
 	if err != nil {
-		return nil, fmt.Errorf("error create order: %w", err)
+		return nil, err
 	}
 	// for product := range params.Products {
 
 	idPr, errProduct := repo.ProductID(ctx, params.Name)
 	if errProduct != nil {
-		return nil, errProduct
+		return nil, fmt.Errorf("get id product: %w", errProduct)
 	}
 
-	var quant pgtype.Numeric
-	// quant.Scan(params.Products[product].Quantity)
-	quant.Scan(params.Quantity)
+	// var quant pgtype.Numeric
+	// // quant.Scan(params.Products[product].Quantity)
+	// quant.Scan(params.Quantity)
 	paramProduct := repository.OrderProductsCreateParams{
 		OrderID: int32(orderID), //nolint: gosec
 		// Name:     params.Products[product].Name,
 		ProductID: int32(idPr), //nolint: gosec
-		Quantity:  quant,
+		Quantity:  params.Quantity,
 	}
 
 	errAddProduct := repo.OrderProductsCreate(ctx, paramProduct)
@@ -49,16 +48,16 @@ func CreateOrderWithProducts(ctx context.Context, params CreateOrderParams, db *
 	}
 	errOrdUp := repo.OrderUpdateTotal(ctx, int32(orderID)) //nolint: gosec
 	if errOrdUp != nil {
-		return nil, errOrdUp
+		return nil, fmt.Errorf("error update total: %w", errOrdUp)
 	}
 	// }
 	order, errOrder := repo.OrderUser(ctx, orderID)
 	if errOrder != nil {
 		return nil, errOrder
 	}
-
 	if errCommit := tx.Commit(ctx); errCommit != nil {
 		return nil, errCommit
 	}
+
 	return order, nil
 }
