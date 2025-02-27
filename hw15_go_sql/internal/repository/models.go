@@ -10,7 +10,7 @@ import (
 
 type ShopOrder struct {
 	ID          int                `db:"id" json:"id"`
-	UserID      *int32             `db:"user_id" json:"user_id"`
+	UserID      int32              `db:"user_id" json:"user_id"`
 	OrderDate   pgtype.Timestamptz `db:"order_date" json:"order_date"`
 	TotalAmount pgtype.Numeric     `db:"total_amount" json:"total_amount"`
 }

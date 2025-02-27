@@ -1,12 +1,28 @@
 definitions:
   handler.CreateOrderParams:
     properties:
+      products:
+        items:
+          $ref: '#/definitions/handler.Product'
+        type: array
+      user:
+        type: string
+    type: object
+  handler.Product:
+    properties:
       product:
         type: string
       quantity:
         type: number
-      user:
+    type: object
+  handler.ProductAddOrderParams:
+    properties:
+      name:
         type: string
+      orderId:
+        type: integer
+      quantity:
+        type: number
     type: object
   handler.ProductCreateParams:
     properties:
@@ -226,6 +242,31 @@ paths:
       summary: updateUser
       tags:
       - updateUser
+  /order_add_product:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ProductAddOrderParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: create order
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: Order add product
+      tags:
+      - OrderAddProduct
   /orders:
     get:
       consumes:

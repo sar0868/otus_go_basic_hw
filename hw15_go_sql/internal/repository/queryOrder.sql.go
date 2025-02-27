@@ -134,7 +134,7 @@ insert into shop.Orders(user_id)
 values ($1) returning id
 `
 
-func (q *Queries) OrdersCreate(ctx context.Context, userID *int32) (int, error) {
+func (q *Queries) OrdersCreate(ctx context.Context, userID int32) (int, error) {
 	row := q.db.QueryRow(ctx, OrdersCreate, userID)
 	var id int
 	err := row.Scan(&id)

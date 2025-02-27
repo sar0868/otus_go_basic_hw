@@ -11,6 +11,23 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const OrderProductUpdate = `-- name: OrderProductUpdate :exec
+update shop.orderproducts op
+set quantity = $3
+where op.order_id = $1 and op.product_id = $2
+`
+
+type OrderProductUpdateParams struct {
+	OrderID   int32          `db:"order_id" json:"order_id"`
+	ProductID int32          `db:"product_id" json:"product_id"`
+	Quantity  pgtype.Numeric `db:"quantity" json:"quantity"`
+}
+
+func (q *Queries) OrderProductUpdate(ctx context.Context, arg OrderProductUpdateParams) error {
+	_, err := q.db.Exec(ctx, OrderProductUpdate, arg.OrderID, arg.ProductID, arg.Quantity)
+	return err
+}
+
 const OrderProductsCreate = `-- name: OrderProductsCreate :exec
 insert into shop.orderproducts 
 (order_id, product_id, quantity)

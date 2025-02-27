@@ -14,14 +14,13 @@ func Orders(ctx context.Context, repo repository.Querier) ([]*repository.OrdersR
 	return orders, nil
 }
 
-// func OrderAddProduct(ctx context.Context, repo repository.Querier, product string) ([]*repository.OrderUserRow, error) {
-// 	if err := repo.ProductUpdate(ctx, product); err != nil {
-// 		return nil, err
-// 	}
-// 	product, err := ProductByName(ctx, repo, newProduct.Name)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return product, nil
+type OrdProdUpParams struct {
+	OrderID  int
+	Product  string
+	Quantity float64
+}
+
+// func OrderProductUpdate(ctx context.Context, repo repository.Querier,
+// params OrdProdUpParams) (*repository.OrdersRow, error) {
 // 	return nil, nil
 // }

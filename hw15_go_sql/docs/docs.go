@@ -284,6 +284,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/order_add_product": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "OrderAddProduct"
+                ],
+                "summary": "Order add product",
+                "parameters": [
+                    {
+                        "description": "Модель которую принимает метод",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.ProductAddOrderParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "create order",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/orders": {
             "get": {
                 "consumes": [
@@ -490,14 +529,39 @@ const docTemplate = `{
         "handler.CreateOrderParams": {
             "type": "object",
             "properties": {
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handler.Product"
+                    }
+                },
+                "user": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.Product": {
+            "type": "object",
+            "properties": {
                 "product": {
                     "type": "string"
                 },
                 "quantity": {
                     "type": "number"
-                },
-                "user": {
+                }
+            }
+        },
+        "handler.ProductAddOrderParams": {
+            "type": "object",
+            "properties": {
+                "name": {
                     "type": "string"
+                },
+                "orderId": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "number"
                 }
             }
         },

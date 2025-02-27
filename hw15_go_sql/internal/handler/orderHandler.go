@@ -6,13 +6,24 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/app"
+	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/repository"
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/service"
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/trx"
 )
 
-type CreateOrderParams struct {
-	User     string  `db:"name" json:"user"`
+type Product struct {
 	Name     string  `db:"name" json:"product"`
+	Quantity float64 `db:"quantity" json:"quantity"`
+}
+
+type CreateOrderParams struct {
+	User     string `db:"name" json:"user"`
+	Products []Product
+}
+
+type ProductAddOrderParams struct {
+	OrderID  int32   `db:"order_id" json:"orderId"`
+	Name     string  `db:"name" json:"name"`
 	Quantity float64 `db:"quantity" json:"quantity"`
 }
 
@@ -53,6 +64,35 @@ func (h *Handler) CreateOrderWithProducts() gin.HandlerFunc {
 			return
 		}
 		order, err := trx.CreateOrderWithProducts(app.Ctx, products, app.DB)
+		if err != nil {
+			c.JSON(http.StatusNotAcceptable, gin.H{
+				"error": fmt.Sprintf("Error create order: %v", err),
+			})
+			return
+		}
+		c.JSON(http.StatusOK, order)
+	}
+}
+
+// Add product in order
+// @Summary Order add product
+// @Tags OrderAddProduct
+// @Accept			json
+// @Produce		json
+// @Param input body ProductAddOrderParams true "Модель которую принимает метод"
+// @Success 200 {string} string "create order"
+// @Failure 400 {string} string "Error"
+// @Router /order_add_product [post].
+func (h *Handler) OrderAddProduct() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var product repository.ProductAddOrderParams
+		if err := c.ShouldBindJSON(&product); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": "Invalid request",
+			})
+			return
+		}
+		order, err := trx.OrderAddProduct(app.Ctx, product, app.DB)
 		if err != nil {
 			c.JSON(http.StatusNotAcceptable, gin.H{
 				"error": fmt.Sprintf("Error create order: %v", err),

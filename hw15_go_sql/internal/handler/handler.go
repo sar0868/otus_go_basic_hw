@@ -24,4 +24,5 @@ func InitHandler(api *gin.Engine, h *Handler) {
 	api.DELETE("/del_product", h.ProductDelete())
 	api.GET("/orders", h.GetOrders())
 	api.POST("/create_order", h.CreateOrderWithProducts())
+	api.POST("/order_add_product", h.OrderAddProduct())
 }

@@ -12,12 +12,13 @@ type Querier interface {
 	GetUserOrdersByName(ctx context.Context, name string) ([]*GetUserOrdersByNameRow, error)
 	OrderCreateByUser(ctx context.Context, name string) (int, error)
 	OrderDelete(ctx context.Context, id int) error
+	OrderProductUpdate(ctx context.Context, arg OrderProductUpdateParams) error
 	OrderProductsCreate(ctx context.Context, arg OrderProductsCreateParams) error
 	OrderUpdate(ctx context.Context, orderID int32) error
 	OrderUpdateTotal(ctx context.Context, orderID int32) error
 	OrderUser(ctx context.Context, id int) (*OrderUserRow, error)
 	Orders(ctx context.Context) ([]*OrdersRow, error)
-	OrdersCreate(ctx context.Context, userID *int32) (int, error)
+	OrdersCreate(ctx context.Context, userID int32) (int, error)
 	OrdersProducts(ctx context.Context) ([]*ShopOrderproduct, error)
 	ProductAddOrder(ctx context.Context, arg ProductAddOrderParams) error
 	ProductCreate(ctx context.Context, arg ProductCreateParams) (int, error)
