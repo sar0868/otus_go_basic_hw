@@ -207,3 +207,30 @@ func (h *Handler) OrderProductUpdate() gin.HandlerFunc {
 		c.JSON(http.StatusOK, order)
 	}
 }
+
+// Delete order by id
+// @Summary delete order by id
+// @Tags deleteOrder
+// @Accept			json
+// @Produce		json
+// @Param id query string true "string valid"
+// @Success 200 {string} string "Delete order by id"
+// @Failure 400 {string} string "Error"
+// @Router /del_order [delete].
+func (h *Handler) OrderDelete() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		idStr := c.Query("id")
+		err := service.OrderDelete(app.Ctx, app.Repo, idStr)
+		if err != nil {
+			msg := fmt.Sprintf("Error delete order id=%s: %s", idStr, err)
+			c.JSON(http.StatusNotAcceptable, gin.H{
+				"message": msg,
+			})
+			return
+		}
+		msg := fmt.Sprintf("Order id=%s delete", idStr)
+		c.JSON(http.StatusOK, gin.H{
+			"message": msg,
+		})
+	}
+}

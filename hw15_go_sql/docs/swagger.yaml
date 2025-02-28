@@ -193,6 +193,30 @@ paths:
       summary: Order Create
       tags:
       - OrderCreate
+  /del_order:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: string valid
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Delete order by id
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: delete order by id
+      tags:
+      - deleteOrder
   /del_product:
     delete:
       consumes:

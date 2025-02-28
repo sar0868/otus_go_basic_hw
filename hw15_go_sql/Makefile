@@ -11,9 +11,6 @@ install-deps:
 lint: 
 	golangci-lint run ./...
 
-test:
-	go test ./...
-
 run:
 	go run cmd/main.go
 

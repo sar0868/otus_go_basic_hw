@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/repository"
 )
@@ -64,4 +65,22 @@ func OrderByID(ctx context.Context, repo repository.Querier, id int) (*repositor
 		return nil, fmt.Errorf("don't found oder by id=%d: %w", id, err)
 	}
 	return order, nil
+}
+
+func OrderDelete(ctx context.Context, repo repository.Querier, idStr string) error {
+	id, errConv := strconv.Atoi(idStr)
+	if errConv != nil {
+		return errConv
+	}
+
+	_, errID := OrderByID(ctx, repo, id)
+	if errID != nil {
+		return errID
+	}
+
+	err := repo.OrderDelete(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
