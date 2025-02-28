@@ -102,6 +102,15 @@ definitions:
       name_2:
         type: string
     type: object
+  repository.UsersStatisticRow:
+    properties:
+      avr price:
+        type: number
+      total_orders:
+        type: integer
+      user:
+        type: string
+    type: object
 host: 0.0.0.0:8080/
 info:
   contact: {}
@@ -463,6 +472,26 @@ paths:
       summary: get Products for range
       tags:
       - getProductsForEange
+  /statistic:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repository.UsersStatisticRow'
+            type: array
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get users statistic
+      tags:
+      - getUsersStatistic
   /user:
     get:
       consumes:

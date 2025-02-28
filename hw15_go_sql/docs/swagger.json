@@ -559,6 +559,37 @@
                 }
             }
         },
+        "/statistic": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "getUsersStatistic"
+                ],
+                "summary": "get users statistic",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/repository.UsersStatisticRow"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "get": {
                 "consumes": [
@@ -784,6 +815,20 @@
                     "type": "string"
                 },
                 "name_2": {
+                    "type": "string"
+                }
+            }
+        },
+        "repository.UsersStatisticRow": {
+            "type": "object",
+            "properties": {
+                "avr price": {
+                    "type": "number"
+                },
+                "total_orders": {
+                    "type": "integer"
+                },
+                "user": {
                     "type": "string"
                 }
             }

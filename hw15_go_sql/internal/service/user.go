@@ -97,3 +97,11 @@ func UserUpdate(ctx context.Context, repo repository.Querier, updateUser reposit
 	}
 	return user, nil
 }
+
+func UsersStatistic(ctx context.Context, repo repository.Querier) ([]*repository.UsersStatisticRow, error) { //nolint: lll
+	users, err := repo.UsersStatistic(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}

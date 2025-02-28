@@ -20,7 +20,6 @@ import (
 // @Router /users [get].
 func (h *Handler) GetUsers() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fmt.Println("Request received get data users")
 		users, err := service.Users(app.Ctx, app.Repo)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, err)
@@ -150,5 +149,23 @@ func (h *Handler) UpdateUser() gin.HandlerFunc {
 			return
 		}
 		c.JSON(http.StatusOK, user)
+	}
+}
+
+// Get users statistic
+// @Summary get users statistic
+// @Tags getUsersStatistic
+// @Accept			json
+// @Produce		json
+// @Success 200 {array} repository.UsersStatisticRow
+// @Failure 400 {string} string "Error"
+// @Router /statistic [get].
+func (h *Handler) Statistic() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		users, err := service.UsersStatistic(app.Ctx, app.Repo)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, err)
+		}
+		c.JSON(http.StatusOK, users)
 	}
 }
