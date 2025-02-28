@@ -59,6 +59,10 @@ func AddUser(ctx context.Context, repo repository.Querier, newUser repository.Us
 }
 
 func DeleteUser(ctx context.Context, repo repository.Querier, name string) error {
+	_, errID := GetUserByName(ctx, repo, name)
+	if errID != nil {
+		return fmt.Errorf("don't found user:%w", errID)
+	}
 	err := repo.UserDelete(ctx, name)
 	if err != nil {
 		return fmt.Errorf("error delete user: %w", err)
@@ -69,7 +73,7 @@ func DeleteUser(ctx context.Context, repo repository.Querier, name string) error
 func GetUserByID(ctx context.Context, repo repository.Querier, id int) (*repository.ShopUser, error) {
 	user, err := repo.UserByID(ctx, id)
 	if err != nil {
-		return nil, fmt.Errorf("don't found data for id= %d", id)
+		return nil, fmt.Errorf("don't found user by id= %d", id)
 	}
 	return user, nil
 }
@@ -77,7 +81,7 @@ func GetUserByID(ctx context.Context, repo repository.Querier, id int) (*reposit
 func GetUserByName(ctx context.Context, repo repository.Querier, name string) (*repository.ShopUser, error) {
 	user, err := repo.UserGetByName(ctx, name)
 	if err != nil {
-		return nil, fmt.Errorf("don't found user for username= %v", name)
+		return nil, fmt.Errorf("don't found user username= %v", name)
 	}
 	return user, nil
 }

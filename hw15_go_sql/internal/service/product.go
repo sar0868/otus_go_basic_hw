@@ -44,6 +44,10 @@ func ProductUpdate(ctx context.Context, repo repository.Querier, newProduct repo
 }
 
 func DeleteProduct(ctx context.Context, repo repository.Querier, name string) error {
+	_, errID := repo.ProductID(ctx, name)
+	if errID != nil {
+		return fmt.Errorf("error don't found product: %w", errID)
+	}
 	err := repo.ProductDelete(ctx, name)
 	if err != nil {
 		return fmt.Errorf("error delete product: %w", err)

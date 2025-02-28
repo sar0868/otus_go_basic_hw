@@ -69,6 +69,37 @@ func (q *Queries) OrdersProducts(ctx context.Context) ([]*ShopOrderproduct, erro
 	return items, nil
 }
 
+const OrdersProductsFull = `-- name: OrdersProductsFull :many
+select op.order_id, p.name, op.quantity from shop.orderproducts op 
+inner join shop.products p on op.product_id = p.id
+`
+
+type OrdersProductsFullRow struct {
+	OrderID  int32          `db:"order_id" json:"order_id"`
+	Name     string         `db:"name" json:"name"`
+	Quantity pgtype.Numeric `db:"quantity" json:"quantity"`
+}
+
+func (q *Queries) OrdersProductsFull(ctx context.Context) ([]*OrdersProductsFullRow, error) {
+	rows, err := q.db.Query(ctx, OrdersProductsFull)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []*OrdersProductsFullRow{}
+	for rows.Next() {
+		var i OrdersProductsFullRow
+		if err := rows.Scan(&i.OrderID, &i.Name, &i.Quantity); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const ProductAddOrder = `-- name: ProductAddOrder :exec
 insert into shop.Orderproducts 
 (order_id, product_id, quantity)

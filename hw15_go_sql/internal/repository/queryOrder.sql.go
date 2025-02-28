@@ -11,6 +11,23 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const OrderByID = `-- name: OrderByID :one
+select id, user_id, order_date, total_amount from shop.orders o
+where o.id = $1
+`
+
+func (q *Queries) OrderByID(ctx context.Context, id int) (*ShopOrder, error) {
+	row := q.db.QueryRow(ctx, OrderByID, id)
+	var i ShopOrder
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.OrderDate,
+		&i.TotalAmount,
+	)
+	return &i, err
+}
+
 const OrderCreateByUser = `-- name: OrderCreateByUser :one
 insert into shop.Orders (user_id)
 values ((select id from shop.Users where name = $1))
@@ -31,22 +48,6 @@ where id=$1
 
 func (q *Queries) OrderDelete(ctx context.Context, id int) error {
 	_, err := q.db.Exec(ctx, OrderDelete, id)
-	return err
-}
-
-const OrderUpdate = `-- name: OrderUpdate :exec
-update shop.orders ord
-set total_amount=(
-select sum(p.price * op.quantity) from 
-shop.orderproducts op
-inner join shop.products p on op.product_id=p.id
-where op.order_id = $1
-group by op.order_id)
-where ord.id  = $1
-`
-
-func (q *Queries) OrderUpdate(ctx context.Context, orderID int32) error {
-	_, err := q.db.Exec(ctx, OrderUpdate, orderID)
 	return err
 }
 

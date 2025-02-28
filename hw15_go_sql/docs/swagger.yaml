@@ -8,6 +8,32 @@ definitions:
       user:
         type: string
     type: object
+  handler.OrderProductUpdateParams:
+    properties:
+      order_id:
+        description: 'nolint: tagliatelle'
+        type: integer
+      product_id:
+        description: 'nolint: tagliatelle'
+        type: integer
+      quantity:
+        type: number
+    type: object
+  handler.OrderRecountParams:
+    properties:
+      orderId:
+        type: integer
+    type: object
+  handler.OrdersProductsFullRow:
+    properties:
+      name:
+        type: string
+      order_id:
+        description: 'nolint: tagliatelle'
+        type: integer
+      quantity:
+        type: number
+    type: object
   handler.Product:
     properties:
       product:
@@ -45,6 +71,20 @@ definitions:
         type: string
       price:
         type: number
+    type: object
+  handler.ShopOrder:
+    properties:
+      id:
+        type: integer
+      order_date:
+        description: 'nolint: tagliatelle'
+        type: string
+      total_amount:
+        description: 'nolint: tagliatelle'
+        type: number
+      user_id:
+        description: 'nolint: tagliatelle'
+        type: integer
     type: object
   repository.UserAddParams:
     properties:
@@ -267,6 +307,58 @@ paths:
       summary: Order add product
       tags:
       - OrderAddProduct
+  /order_recount:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.OrderRecountParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order after recount
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: order recount
+      tags:
+      - orderRecount
+  /order_update:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.OrderProductUpdateParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handler.ShopOrder'
+            type: array
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: order update
+      tags:
+      - orderUpdateQuantity
   /orders:
     get:
       consumes:
@@ -285,6 +377,26 @@ paths:
       summary: get orders
       tags:
       - getOrders
+  /orders_products:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handler.OrdersProductsFullRow'
+            type: array
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get orders full
+      tags:
+      - getOrdersFull
   /product:
     get:
       consumes:

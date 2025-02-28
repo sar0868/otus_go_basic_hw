@@ -16,6 +16,10 @@ values
 -- name: OrdersProducts :many
 select * from shop.orderproducts op ;
 
+-- name: OrdersProductsFull :many
+select op.order_id, p.name, op.quantity from shop.orderproducts op 
+inner join shop.products p on op.product_id = p.id;
+
 -- name: OrderProductUpdate :exec
 update shop.orderproducts op
 set quantity = $3

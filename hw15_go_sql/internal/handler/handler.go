@@ -25,4 +25,11 @@ func InitHandler(api *gin.Engine, h *Handler) {
 	api.GET("/orders", h.GetOrders())
 	api.POST("/create_order", h.CreateOrderWithProducts())
 	api.POST("/order_add_product", h.OrderAddProduct())
+	api.GET("/orders_products", h.OrdersProductsFull())
+	api.POST("/order_recount", h.OrderRecount())
+	api.POST("/order_update", h.OrderProductUpdate())
 }
+
+// user statistic
+// orderDelete
+// remove orderCreate ??

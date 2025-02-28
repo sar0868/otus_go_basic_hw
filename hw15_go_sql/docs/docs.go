@@ -323,6 +323,87 @@ const docTemplate = `{
                 }
             }
         },
+        "/order_recount": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orderRecount"
+                ],
+                "summary": "order recount",
+                "parameters": [
+                    {
+                        "description": "Модель которую принимает метод",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.OrderRecountParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order after recount",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order_update": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orderUpdateQuantity"
+                ],
+                "summary": "order update",
+                "parameters": [
+                    {
+                        "description": "Модель которую принимает метод",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.OrderProductUpdateParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/handler.ShopOrder"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/orders": {
             "get": {
                 "consumes": [
@@ -340,6 +421,37 @@ const docTemplate = `{
                         "description": "Get orders",
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders_products": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "getOrdersFull"
+                ],
+                "summary": "get orders full",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/handler.OrdersProductsFullRow"
+                            }
                         }
                     },
                     "400": {
@@ -540,6 +652,45 @@ const docTemplate = `{
                 }
             }
         },
+        "handler.OrderProductUpdateParams": {
+            "type": "object",
+            "properties": {
+                "order_id": {
+                    "description": "nolint: tagliatelle",
+                    "type": "integer"
+                },
+                "product_id": {
+                    "description": "nolint: tagliatelle",
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "number"
+                }
+            }
+        },
+        "handler.OrderRecountParams": {
+            "type": "object",
+            "properties": {
+                "orderId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.OrdersProductsFullRow": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "order_id": {
+                    "description": "nolint: tagliatelle",
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "number"
+                }
+            }
+        },
         "handler.Product": {
             "type": "object",
             "properties": {
@@ -596,6 +747,26 @@ const docTemplate = `{
                 },
                 "price": {
                     "type": "number"
+                }
+            }
+        },
+        "handler.ShopOrder": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "order_date": {
+                    "description": "nolint: tagliatelle",
+                    "type": "string"
+                },
+                "total_amount": {
+                    "description": "nolint: tagliatelle",
+                    "type": "number"
+                },
+                "user_id": {
+                    "description": "nolint: tagliatelle",
+                    "type": "integer"
                 }
             }
         },

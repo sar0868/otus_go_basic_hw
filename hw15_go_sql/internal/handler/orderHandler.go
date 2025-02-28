@@ -27,6 +27,19 @@ type ProductAddOrderParams struct {
 	Quantity float64 `db:"quantity" json:"quantity"`
 }
 
+type ShopOrder struct {
+	ID          int     `db:"id" json:"id"`
+	UserID      int32   `db:"user_id" json:"user_id"`           //nolint: tagliatelle
+	OrderDate   string  `db:"order_date" json:"order_date"`     //nolint: tagliatelle
+	TotalAmount float64 `db:"total_amount" json:"total_amount"` //nolint: tagliatelle
+}
+
+type OrderProductUpdateParams struct {
+	OrderID   int32   `json:"order_id"`   //nolint: tagliatelle
+	ProductID int32   `json:"product_id"` //nolint: tagliatelle
+	Quantity  float64 `json:"quantity"`
+}
+
 // Get Orders
 // @Summary get orders
 // @Tags getOrders
@@ -96,6 +109,98 @@ func (h *Handler) OrderAddProduct() gin.HandlerFunc {
 		if err != nil {
 			c.JSON(http.StatusNotAcceptable, gin.H{
 				"error": fmt.Sprintf("Error create order: %v", err),
+			})
+			return
+		}
+		c.JSON(http.StatusOK, order)
+	}
+}
+
+type OrdersProductsFullRow struct {
+	OrderID  int32   `db:"order_id" json:"order_id"` //nolint: tagliatelle
+	Name     string  `db:"name" json:"name"`
+	Quantity float64 `db:"quantity" json:"quantity"`
+}
+
+// Get Orders full
+// @Summary get orders full
+// @Tags getOrdersFull
+// @Accept			json
+// @Produce		json
+// @Success 200 {array} OrdersProductsFullRow
+// @Failure 400 {string} string "Error"
+// @Router /orders_products [get].
+func (h *Handler) OrdersProductsFull() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		orders, err := service.OrdersProductsFull(app.Ctx, app.Repo)
+		if err != nil {
+			c.JSON(http.StatusNotAcceptable, gin.H{
+				"error": fmt.Sprintf("Error get full orders: %v", err),
+			})
+			return
+		}
+		c.JSON(http.StatusOK, orders)
+	}
+}
+
+type OrderRecountParams struct {
+	OrderID int `json:"orderId"`
+}
+
+// Get Order recount
+// @Summary order recount
+// @Tags orderRecount
+// @Accept			json
+// @Produce		json
+// @Param input body OrderRecountParams true "Модель которую принимает метод"
+// @Success 200 {string} string "Order after recount"
+// @Failure 400 {string} string "Error"
+// @Router /order_recount [post].
+func (h *Handler) OrderRecount() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var param OrderRecountParams
+		if err := c.ShouldBindJSON(&param); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": "Invalid request",
+			})
+			return
+		}
+		id := param.OrderID
+		order, err := service.OrderRecount(app.Ctx, app.Repo, id)
+		if err != nil {
+			msg := fmt.Sprintf("Error recount order id=%v: %s", id, err)
+			c.JSON(http.StatusNotAcceptable, gin.H{
+				"error": msg,
+			})
+			return
+		}
+		c.JSON(http.StatusOK, order)
+	}
+}
+
+// Get Order update
+// @Summary order update
+// @Tags orderUpdateQuantity
+// @Accept			json
+// @Produce		json
+// @Param input body OrderProductUpdateParams true "Модель которую принимает метод"
+// @Success 200 {array} ShopOrder
+// @Failure 400 {string} string "Error"
+// @Router /order_update [post].
+func (h *Handler) OrderProductUpdate() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var params repository.OrderProductUpdateParams
+		if err := c.ShouldBindJSON(&params); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": "Invalid request",
+			})
+			return
+		}
+		order, err := service.OrderProductUpdate(app.Ctx, app.Repo, params)
+		if err != nil {
+			msg := fmt.Sprintf("Error update order: %s", err)
+			c.JSON(http.StatusNotAcceptable, gin.H{
+				"error": msg,
 			})
 			return
 		}

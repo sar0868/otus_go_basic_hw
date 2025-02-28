@@ -26,21 +26,14 @@ func CreateOrderWithProducts(ctx context.Context, params CreateOrderParams, db *
 		return nil, err
 	}
 	for product := range params.Products {
-		// idPr, errProduct := repo.ProductID(ctx, params.Name)
 		idPr, errProduct := repo.ProductID(ctx, params.Products[product].Name)
 		if errProduct != nil {
 			return nil, fmt.Errorf("get id product: %w", errProduct)
 		}
-
-		// var quant pgtype.Numeric
-		// // quant.Scan(params.Products[product].Quantity)
-		// quant.Scan(params.Quantity)
 		paramProduct := repository.OrderProductsCreateParams{
-			OrderID: int32(orderID), //nolint: gosec
-			// Name:     params.Products[product].Name,
-			ProductID: int32(idPr), //nolint: gosec
-			// Quantity:  params.Quantity,
-			Quantity: params.Products[product].Quantity,
+			OrderID:   int32(orderID), //nolint: gosec
+			ProductID: int32(idPr),    //nolint: gosec
+			Quantity:  params.Products[product].Quantity,
 		}
 
 		errAddProduct := repo.OrderProductsCreate(ctx, paramProduct)
