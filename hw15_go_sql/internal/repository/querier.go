@@ -18,8 +18,6 @@ type Querier interface {
 	OrderUpdateTotal(ctx context.Context, orderID int32) error
 	OrderUser(ctx context.Context, id int) (*OrderUserRow, error)
 	Orders(ctx context.Context) ([]*OrdersRow, error)
-	OrdersCreate(ctx context.Context, userID int32) (int, error)
-	OrdersProducts(ctx context.Context) ([]*ShopOrderproduct, error)
 	OrdersProductsFull(ctx context.Context) ([]*OrdersProductsFullRow, error)
 	ProductAddOrder(ctx context.Context, arg ProductAddOrderParams) error
 	ProductCreate(ctx context.Context, arg ProductCreateParams) (int, error)

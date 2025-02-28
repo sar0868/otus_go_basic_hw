@@ -1,7 +1,3 @@
--- name: OrdersCreate :one
-insert into shop.Orders(user_id)
-values ($1) returning id;
-
 -- name: OrderDelete :exec
 delete from shop.orders 
 where id=$1;

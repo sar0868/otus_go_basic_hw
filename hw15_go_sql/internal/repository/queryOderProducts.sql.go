@@ -45,30 +45,6 @@ func (q *Queries) OrderProductsCreate(ctx context.Context, arg OrderProductsCrea
 	return err
 }
 
-const OrdersProducts = `-- name: OrdersProducts :many
-select order_id, product_id, quantity from shop.orderproducts op
-`
-
-func (q *Queries) OrdersProducts(ctx context.Context) ([]*ShopOrderproduct, error) {
-	rows, err := q.db.Query(ctx, OrdersProducts)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []*ShopOrderproduct{}
-	for rows.Next() {
-		var i ShopOrderproduct
-		if err := rows.Scan(&i.OrderID, &i.ProductID, &i.Quantity); err != nil {
-			return nil, err
-		}
-		items = append(items, &i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const OrdersProductsFull = `-- name: OrdersProductsFull :many
 select op.order_id, p.name, op.quantity from shop.orderproducts op 
 inner join shop.products p on op.product_id = p.id
