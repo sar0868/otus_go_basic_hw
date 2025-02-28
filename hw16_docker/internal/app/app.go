@@ -9,8 +9,8 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/config"
-	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/repository"
+	"github.com/sar0868/otus_go_basic_hw/hw16_docker/internal/config"
+	"github.com/sar0868/otus_go_basic_hw/hw16_docker/internal/repository"
 )
 
 var (

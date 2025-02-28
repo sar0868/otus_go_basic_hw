@@ -6,7 +6,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/repository"
+	"github.com/sar0868/otus_go_basic_hw/hw16_docker/internal/repository"
 )
 
 func CreateOrderWithProducts(ctx context.Context, params CreateOrderParams, db *pgxpool.Pool) (*repository.OrderUserRow, error) { //nolint: lll

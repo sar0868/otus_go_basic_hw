@@ -1,0 +1,23 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ENV=development
+    depends_on:
+      - pg
+
+  pg:
+    image: postgres
+    environment:
+      POSTGRES_DB: ${APP_DB_DATABASE}
+      POSTGRES_USER: ${APP_DB_USER}
+      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${APP_DB_PORT}:5432"
+    volumes:
+      - ./pg_store:/var/lib/postgresql/data

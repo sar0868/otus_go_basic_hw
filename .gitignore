@@ -26,3 +26,4 @@ ehthumbs.db
 Thumbs.db
 .vscode/
 *.bak
+hw16_docker/pg_store/pgdata

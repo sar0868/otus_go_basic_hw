@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/app"
-	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/repository"
-	"github.com/sar0868/otus_go_basic_hw/hw15_go_sql/internal/service"
+	"github.com/sar0868/otus_go_basic_hw/hw16_docker/internal/app"
+	"github.com/sar0868/otus_go_basic_hw/hw16_docker/internal/repository"
+	"github.com/sar0868/otus_go_basic_hw/hw16_docker/internal/service"
 )
 
 // Get Users
