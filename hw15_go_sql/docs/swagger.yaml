@@ -1,0 +1,564 @@
+definitions:
+  handler.CreateOrderParams:
+    properties:
+      products:
+        items:
+          $ref: '#/definitions/handler.Product'
+        type: array
+      user:
+        type: string
+    type: object
+  handler.OrderProductUpdateParams:
+    properties:
+      order_id:
+        description: 'nolint: tagliatelle'
+        type: integer
+      product_id:
+        description: 'nolint: tagliatelle'
+        type: integer
+      quantity:
+        type: number
+    type: object
+  handler.OrderRecountParams:
+    properties:
+      orderId:
+        type: integer
+    type: object
+  handler.OrdersProductsFullRow:
+    properties:
+      name:
+        type: string
+      order_id:
+        description: 'nolint: tagliatelle'
+        type: integer
+      quantity:
+        type: number
+    type: object
+  handler.Product:
+    properties:
+      product:
+        type: string
+      quantity:
+        type: number
+    type: object
+  handler.ProductAddOrderParams:
+    properties:
+      name:
+        type: string
+      orderId:
+        type: integer
+      quantity:
+        type: number
+    type: object
+  handler.ProductCreateParams:
+    properties:
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  handler.ProductGetRangePriceParams:
+    properties:
+      price:
+        type: number
+      price_2:
+        description: 'nolint: tagliatelle'
+        type: number
+    type: object
+  handler.ProductUpdateParams:
+    properties:
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  handler.ShopOrder:
+    properties:
+      id:
+        type: integer
+      order_date:
+        description: 'nolint: tagliatelle'
+        type: string
+      total_amount:
+        description: 'nolint: tagliatelle'
+        type: number
+      user_id:
+        description: 'nolint: tagliatelle'
+        type: integer
+    type: object
+  repository.UserAddParams:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  repository.UserUpdateParams:
+    properties:
+      name:
+        type: string
+      name_2:
+        type: string
+    type: object
+  repository.UsersStatisticRow:
+    properties:
+      avr price:
+        type: number
+      total_orders:
+        type: integer
+      user:
+        type: string
+    type: object
+host: 0.0.0.0:8080/
+info:
+  contact: {}
+  description: API Server
+  title: 'HW15: shop'
+  version: "1"
+paths:
+  /add_product:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ProductCreateParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Added product
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: addProduct
+      tags:
+      - addProduct
+  /add_user:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/repository.UserAddParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Added user
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: addUser
+      tags:
+      - addUser
+  /create_order:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateOrderParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: create order
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: Order Create
+      tags:
+      - OrderCreate
+  /del_order:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: string valid
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Delete order by id
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: delete order by id
+      tags:
+      - deleteOrder
+  /del_product:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: string valid
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Delete product
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: delete product
+      tags:
+      - deleteProduct
+  /del_user:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: string valid
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Delete user by name
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: delete User by name
+      tags:
+      - deleteUserByName
+  /edit_product:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ProductUpdateParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update product
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: update product price
+      tags:
+      - updateProductPrice
+  /edit_user:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/repository.UserUpdateParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update user name
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: updateUser
+      tags:
+      - updateUser
+  /order_add_product:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ProductAddOrderParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: create order
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: Order add product
+      tags:
+      - OrderAddProduct
+  /order_recount:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.OrderRecountParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order after recount
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: order recount
+      tags:
+      - orderRecount
+  /order_update:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.OrderProductUpdateParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handler.ShopOrder'
+            type: array
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: order update
+      tags:
+      - orderUpdateQuantity
+  /orders:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get orders
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get orders
+      tags:
+      - getOrders
+  /orders_products:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handler.OrdersProductsFullRow'
+            type: array
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get orders full
+      tags:
+      - getOrdersFull
+  /product:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: string valid
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get product by name
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get Product by name
+      tags:
+      - getProductByName
+  /products:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get products
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get products
+      tags:
+      - getProducts
+  /products_prices:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Модель которую принимает метод
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ProductGetRangePriceParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: get products
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get Products for range
+      tags:
+      - getProductsForEange
+  /statistic:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repository.UsersStatisticRow'
+            type: array
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get users statistic
+      tags:
+      - getUsersStatistic
+  /user:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: string valid
+        in: query
+        name: id
+        type: string
+      - description: string valid
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get user by parameters
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get User by parameters
+      tags:
+      - getUserByParameters
+  /users:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get users
+          schema:
+            type: string
+        "400":
+          description: Error
+          schema:
+            type: string
+      summary: get users
+      tags:
+      - getUsers
+swagger: "2.0"

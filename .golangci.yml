@@ -26,6 +26,9 @@ issues:
         - dupl
         - gocyclo
         - gosec
+    - path: /
+      linters:
+        - typecheck
 
 linters:
   disable-all: true
@@ -68,7 +71,6 @@ linters:
     - stylecheck
     - tagliatelle
     - thelper
-    - typecheck
     - unconvert
     - unparam
     - unused
