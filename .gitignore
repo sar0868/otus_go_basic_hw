@@ -26,3 +26,7 @@ ehthumbs.db
 Thumbs.db
 .vscode/
 *.bak
+hw16_docker/pg_store/pgdata
+hw14_sql/.dbeaver
+hw14_sql/.project
+hw15_go_sql/bin
