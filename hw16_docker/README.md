@@ -8,8 +8,11 @@
 - Проверьте работоспособность приложения
 
 ### Критерии оценки
+
 - Реализован Dockerfile - 2 балла
 - Реализован docker-compose - 2 балла
 - Приложение собирается и взаимодейтсвует с БД - 2 балла
 
 #### Зачёт от 4 баллов
+
+https://github.com/victorsteven/Dockerized-Golang-Postgres-Mysql-API/blob/master/Dockerfile

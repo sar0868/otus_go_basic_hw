@@ -11,6 +11,9 @@ services:
     depends_on:
       pg:
         condition: service_healthy
+    # restart: on-failure
+    # networks:
+    #   - shop
 
   pg:
     image: postgres:16
@@ -32,6 +35,11 @@ services:
       interval: 5s
       timeout: 1s
       retries: 5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # networks:
+    #   - shop
+
   migrations:
     image: ghcr.io/kukymbr/goose-docker:3.24.1
     restart: no
@@ -46,3 +54,11 @@ services:
       - GOOSE_VERBOSE=true
     volumes:
       - ./sql/migrations:/migrations
+    # networks:
+    #   - shop
+
+volumes:
+  pgdata:
+# networks:
+#   shop:
+#     driver: bridge
