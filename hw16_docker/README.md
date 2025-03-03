@@ -14,5 +14,3 @@
 - Приложение собирается и взаимодейтсвует с БД - 2 балла
 
 #### Зачёт от 4 баллов
-
-https://github.com/victorsteven/Dockerized-Golang-Postgres-Mysql-API/blob/master/Dockerfile
