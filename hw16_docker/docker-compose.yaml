@@ -9,14 +9,40 @@ services:
     env_file:
       - .env
     depends_on:
-      - pg
+      pg:
+        condition: service_healthy
 
   pg:
     image: postgres:16
     container_name: postgres
+    env_file:
+      - .env
     environment:
       POSTGRES_DB: ${APP_DB_DATABASE}
       POSTGRES_USER: ${APP_DB_USER}
       POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
     ports:
       - "${APP_DB_PORT}:5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "sh -c 'pg_isready -U ${APP_DB_USER} -d ${APP_DB_DATABASE}'",
+        ]
+      interval: 5s
+      timeout: 1s
+      retries: 5
+  migrations:
+    image: ghcr.io/kukymbr/goose-docker:3.24.1
+    restart: no
+    depends_on:
+      pg:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - GOOSE_DRIVER=postgres
+      - GOOSE_DBSTRING=host=pg port=5432 user=${APP_DB_USER} password=${APP_DB_PASSWORD} dbname=${APP_DB_DATABASE}
+      - GOOSE_VERBOSE=true
+    volumes:
+      - ./sql/migrations:/migrations

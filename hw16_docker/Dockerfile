@@ -1,19 +1,20 @@
 FROM golang:1.24.0-alpine3.21 AS builder
 
+RUN apk update && apk add --no-cache git
+
 WORKDIR /app
-COPY go.mod .
+COPY go.mod go.sum ./
+
+RUN go mod download
 COPY . .
-RUN go mod tidy
-RUN GOBIN=$(LOCAL_BIN) go install github.com/pressly/goose/v3/cmd/goose@latest
+
 RUN go build -o /shop cmd/main.go
-CMD ["goose up"]
-# CMD [ "goose -dir ./sql/migrations postgres host=0.0.0.0 port=5432 dbname=shop user=username password=passwd sslmode=disable up " ]
-# CMD ["go mod download", "go build -o /shop cmd/main.go", "make migration-up"]
+
 FROM alpine:latest
 COPY --from=builder /shop /shop
 COPY --from=builder /app/.env .
 EXPOSE 8080
-CMD ["/shop"]
+CMD ["./shop"]
 
 
 # docker build -t hello-world-go .
